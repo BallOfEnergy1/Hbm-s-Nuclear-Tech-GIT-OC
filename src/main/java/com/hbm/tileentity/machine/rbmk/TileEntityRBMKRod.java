@@ -11,7 +11,6 @@ import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRBMKRod;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 import com.hbm.util.Compat;
-
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -463,7 +462,19 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 			OC_poison_buf = "N/A";
 			OC_fuelType = "N/A";
 		}
-		return new Object[] {heat, fluxSlow, fluxFast, OC_enrich_buf, OC_poison_buf, OC_fuelType};
+		return new Object[] {heat, fluxSlow, fluxFast, OC_enrich_buf, OC_poison_buf, ((RBMKRod)this.getBlockType()).moderated, xCoord, yCoord, zCoord};
+	}
+
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getModerated(Context context, Arguments args) {
+		return new Object[] {((RBMKRod)this.getBlockType()).moderated};
+	}
+
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getCoordinates(Context context, Arguments args) {
+		return new Object[] {xCoord, yCoord, zCoord};
 	}
 
 	@Override
