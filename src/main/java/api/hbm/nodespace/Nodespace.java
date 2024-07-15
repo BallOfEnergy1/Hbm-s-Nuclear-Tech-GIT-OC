@@ -6,9 +6,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import api.hbm.energymk2.IEnergyHandler;
-import api.hbm.fluidmk2.IFluidHandler;
 import api.hbm.nodespace.Net.NetType;
-import com.hbm.main.MainRegistry;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
@@ -98,22 +97,22 @@ public class Nodespace {
 				TileEntity te = world.getTileEntity(position.getX(), position.getY(), position.getZ());
 				if(te instanceof INodeConductor) { // Make the net's type based on the type exposed by the conductor.
 					INodeConductor conductor = (INodeConductor) te;
-					new Net(conductor.nodeType()).joinLink(node);
-					return; // return statement after each!
+					if(conductor.nodeType() == NetType.FLUID) { // create special nets
+						new Net(NetType.FLUID, Fluids.NONE).joinLink(node);
+						return;
+					} else { // create other nets
+						new Net(conductor.nodeType()).joinLink(node);
+						return;
+					}
+					 // return statement after each!
 				}
 				if(te instanceof IEnergyHandler) { // Make an energy net.
 					new Net(NetType.ENERGY).joinLink(node);
 					return;
 				}
-				if(te instanceof IFluidHandler) { // Make a fluid net.
-					new Net(NetType.FLUID).joinLink(node);
-					return;
-				}
 				// New net types can be added below.
 			}
 		}
-
-		MainRegistry.logger.error("Nodespace net failed to create.");
 	}
 	
 	public static boolean checkConnection(Node connectsTo, DirPos connectFrom, boolean skipSideCheck) {

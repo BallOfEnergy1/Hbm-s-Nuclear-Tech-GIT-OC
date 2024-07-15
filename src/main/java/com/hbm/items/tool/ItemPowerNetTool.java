@@ -56,6 +56,7 @@ public class ItemPowerNetTool extends Item {
 				player.addChatComponentMessage(ChatBuilder.start("Providers: " + net.providerEntries.size()).color(EnumChatFormatting.YELLOW).flush());
 				player.addChatComponentMessage(ChatBuilder.start("Receivers: " + net.receiverEntries.size()).color(EnumChatFormatting.YELLOW).flush());
 				player.addChatComponentMessage(ChatBuilder.start("Network Type: " + net.netType.name()).color(EnumChatFormatting.YELLOW).flush());
+				player.addChatComponentMessage(ChatBuilder.start("Attributes: " + net.netAttributes.toString()).color(EnumChatFormatting.YELLOW).flush());
 				player.addChatComponentMessage(ChatBuilder.start("End of diagnostic for network " + id).color(EnumChatFormatting.GOLD).flush());
 				
 				for(Node link : net.links) {

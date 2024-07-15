@@ -4,7 +4,6 @@ import java.util.*;
 
 import api.hbm.nodespace.Nodespace.Node;
 import com.hbm.util.Tuple;
-import com.hbm.util.Tuple.Pair;
 
 public class Net {
 
@@ -15,11 +14,20 @@ public class Net {
     public HashMap<INodeReceiver, Long> receiverEntries = new HashMap();
     public HashMap<INodeProvider, Long> providerEntries = new HashMap();
 
-    public NetType netType = NetType.NONE;
+    public NetType netType;
+    public Object netAttributes = new Object();
 
     public long tracker = 0L;
 
+    // Create a default net with no special attributes (ex: energy nets)
     public Net(NetType type) {
+        this.netType = type;
+        Nodespace.nets.add(this);
+    }
+
+    // Create a special net with attributes set during creation (ex: fluid nets)
+    public Net(NetType type, Object attributes) {
+        this.netAttributes = attributes;
         this.netType = type;
         Nodespace.nets.add(this);
     }
@@ -60,6 +68,9 @@ public class Net {
         // if the net types are *not* the same, then do not merge them (merging a power and a fluid net could cause some... undesirable consequences)
         if(this.netType != network.netType) return;
 
+        // this took me way too long to figure out was needed; only merge the networks if the attributes are the same (fluids and shit)
+        if(!this.netAttributes.equals(network.netAttributes)) return;
+
         List<Node> oldNodes = new ArrayList(network.links.size());
         oldNodes.addAll(network.links); // might prevent oddities related to joining - nvm it does nothing
 
@@ -73,7 +84,12 @@ public class Net {
 
     /** Adds the node as part of this network's links */
     public Net joinLink(Node node) {
-        if(node.net != null) node.net.leaveLink(node);
+        if(node.net != null) {
+            if(node.net.netAttributes != this.netAttributes) {
+                return null;
+            }
+            node.net.leaveLink(node);
+        }
         return forceJoinLink(node);
     }
 
