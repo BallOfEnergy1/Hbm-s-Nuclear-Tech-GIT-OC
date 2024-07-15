@@ -1,9 +1,10 @@
 package com.hbm.tileentity.network;
 
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.Nodespace.PowerNode;
+import api.hbm.nodespace.Nodespace.Node;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,10 +27,10 @@ public class TileEntityConnector extends TileEntityPylonBase {
 	}
 
 	@Override
-	public PowerNode createNode() {
+	public Node createNode() {
 		TileEntity tile = (TileEntity) this;
 		ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata()).getOpposite();
-		PowerNode node = new PowerNode(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord)).setConnections(
+		Node node = new Node(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord)).setConnections(
 				new DirPos(xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN),
 				new DirPos(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir));
 		for(int[] pos : this.connected) node.addConnection(new DirPos(pos[0], pos[1], pos[2], ForgeDirection.UNKNOWN));
@@ -37,7 +38,7 @@ public class TileEntityConnector extends TileEntityPylonBase {
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) { //i've about had it with your fucking bullshit
-		return ForgeDirection.getOrientation(this.getBlockMetadata()).getOpposite() == dir;
+	public boolean canConnect(ForgeDirection dir, NetType type) { //i've about had it with your fucking bullshit
+		return (ForgeDirection.getOrientation(this.getBlockMetadata()).getOpposite() == dir) && type == NetType.ENERGY;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import api.hbm.nodespace.Net;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.BlockHadronCoil;
 import com.hbm.blocks.machine.BlockHadronPlating;
@@ -21,7 +22,7 @@ import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.tileentity.machine.TileEntityHadronDiode.DiodeConfig;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,7 +38,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityHadron extends TileEntityMachineBase implements IEnergyReceiverMK2, IGUIProvider {
+public class TileEntityHadron extends TileEntityMachineBase implements IEnergyReceiver, IGUIProvider {
 	
 	public long power;
 	public static final long maxPower = 10000000;
@@ -331,7 +332,7 @@ public class TileEntityHadron extends TileEntityMachineBase implements IEnergyRe
 	}
 	
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return false;
 	}
 	

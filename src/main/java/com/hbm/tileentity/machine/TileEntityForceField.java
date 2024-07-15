@@ -3,6 +3,8 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net;
 import com.hbm.inventory.container.ContainerForceField;
 import com.hbm.inventory.gui.GUIForceField;
 import com.hbm.items.ModItems;
@@ -13,7 +15,6 @@ import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityLoadedBase;
 
 import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,7 +32,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityForceField extends TileEntityLoadedBase implements ISidedInventory, IEnergyReceiverMK2, IGUIProvider {
+public class TileEntityForceField extends TileEntityLoadedBase implements ISidedInventory, IEnergyReceiver, IGUIProvider {
 
 	private ItemStack slots[];
 	
@@ -458,7 +459,7 @@ public class TileEntityForceField extends TileEntityLoadedBase implements ISided
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.UP && dir != ForgeDirection.UNKNOWN;
 	}
 	

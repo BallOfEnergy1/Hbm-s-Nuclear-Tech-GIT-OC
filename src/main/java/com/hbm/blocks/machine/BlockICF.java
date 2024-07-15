@@ -2,6 +2,8 @@ package com.hbm.blocks.machine;
 
 import java.util.Random;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.lib.RefStrings;
 import com.hbm.render.block.ct.CT;
@@ -9,7 +11,6 @@ import com.hbm.render.block.ct.CTStitchReceiver;
 import com.hbm.render.block.ct.IBlockCT;
 import com.hbm.tileentity.machine.TileEntityICFController;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -93,7 +94,7 @@ public class BlockICF extends BlockContainer implements IBlockCT {
 		super.breakBlock(world, x, y, z, block, meta);
 	}
 	
-	public static class TileEntityBlockICF extends TileEntity implements IEnergyReceiverMK2 {
+	public static class TileEntityBlockICF extends TileEntity implements IEnergyReceiver {
 
 		public Block block;
 		public int meta;
@@ -214,9 +215,9 @@ public class BlockICF extends BlockContainer implements IBlockCT {
 		}
 		
 		@Override
-		public boolean canConnect(ForgeDirection dir) {
+		public boolean canConnect(ForgeDirection dir, NetType type) {
 			if(this.getBlockMetadata() != 1) return false;
-			return dir != ForgeDirection.UNKNOWN;
+			return dir != ForgeDirection.UNKNOWN && type == NetType.ENERGY;
 		}
 	}
 }

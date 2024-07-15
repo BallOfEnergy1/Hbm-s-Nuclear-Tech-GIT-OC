@@ -7,8 +7,8 @@ import com.hbm.util.ColorUtil;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.Nodespace;
-import api.hbm.energymk2.Nodespace.PowerNode;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
@@ -66,9 +66,9 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 	}
 
 	@Override
-	public PowerNode createNode() {
+	public Node createNode() {
 		TileEntity tile = (TileEntity) this;
-		PowerNode node = new PowerNode(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord)).setConnections(new DirPos(xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN));
+		Node node = new Node(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord)).setConnections(new DirPos(xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN));
 		for(int[] pos : this.connected) node.addConnection(new DirPos(pos[0], pos[1], pos[2], ForgeDirection.UNKNOWN));
 		return node;
 	}
@@ -76,8 +76,8 @@ public abstract class TileEntityPylonBase extends TileEntityCableBaseNT {
 	public void addConnection(int x, int y, int z) {
 		
 		connected.add(new int[] {x, y, z});
-		
-		PowerNode node = Nodespace.getNode(worldObj, xCoord, yCoord, zCoord);
+
+		Node node = Nodespace.getNode(worldObj, xCoord, yCoord, zCoord);
 		node.recentlyChanged = true;
 		node.addConnection(new DirPos(x, y, z, ForgeDirection.UNKNOWN));
 		

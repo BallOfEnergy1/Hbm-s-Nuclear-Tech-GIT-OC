@@ -5,7 +5,7 @@ import com.hbm.lib.Library;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.Nodespace.PowerNode;
+import api.hbm.nodespace.Nodespace.Node;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -49,9 +49,9 @@ public class TileEntitySubstation extends TileEntityPylonBase {
 	}
 
 	@Override
-	public PowerNode createNode() {
+	public Node createNode() {
 		TileEntity tile = (TileEntity) this;
-		PowerNode node = new PowerNode(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord),
+		Node node = new Node(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord),
 				new BlockPos(tile.xCoord + 1, tile.yCoord, tile.zCoord + 1),
 				new BlockPos(tile.xCoord + 1, tile.yCoord, tile.zCoord - 1),
 				new BlockPos(tile.xCoord - 1, tile.yCoord, tile.zCoord + 1),

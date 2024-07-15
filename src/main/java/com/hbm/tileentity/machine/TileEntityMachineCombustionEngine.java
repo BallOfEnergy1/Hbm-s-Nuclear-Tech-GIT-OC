@@ -1,5 +1,7 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyProvider;
+import api.hbm.nodespace.Net;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.container.ContainerCombustionEngine;
@@ -19,7 +21,6 @@ import com.hbm.tileentity.TileEntityMachinePolluting;
 import com.hbm.util.EnumUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,7 +33,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineCombustionEngine extends TileEntityMachinePolluting implements IEnergyProviderMK2, IFluidStandardTransceiver, IControlReceiver, IGUIProvider {
+public class TileEntityMachineCombustionEngine extends TileEntityMachinePolluting implements IEnergyProvider, IFluidStandardTransceiver, IControlReceiver, IGUIProvider {
 	
 	public boolean isOn = false;
 	public static long maxPower = 2_500_000;
@@ -190,7 +191,7 @@ public class TileEntityMachineCombustionEngine extends TileEntityMachinePollutin
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.DOWN;
 	}
 

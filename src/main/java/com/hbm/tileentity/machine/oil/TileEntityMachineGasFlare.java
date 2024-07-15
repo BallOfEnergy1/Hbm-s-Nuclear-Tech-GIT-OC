@@ -2,6 +2,7 @@ package com.hbm.tileentity.machine.oil;
 
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFluidAcceptor;
@@ -28,7 +29,6 @@ import com.hbm.util.I18nUtil;
 import com.hbm.util.ParticleUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.relauncher.Side;
@@ -44,7 +44,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-public class TileEntityMachineGasFlare extends TileEntityMachineBase implements IEnergyProviderMK2, IFluidContainer, IFluidAcceptor, IFluidStandardReceiver, IControlReceiver, IGUIProvider, IUpgradeInfoProvider, IInfoProviderEC {
+public class TileEntityMachineGasFlare extends TileEntityMachineBase implements IEnergyProvider, IFluidContainer, IFluidAcceptor, IFluidStandardReceiver, IControlReceiver, IGUIProvider, IUpgradeInfoProvider, IInfoProviderEC {
 
 	public long power;
 	public static final long maxPower = 100000;

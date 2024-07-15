@@ -3,6 +3,10 @@ package com.hbm.blocks.network;
 import java.util.ArrayList;
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.INodeConnector;
+import api.hbm.nodespace.INodeReceiver.ConnectionPriority;
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.tileentity.TileEntityLoadedBase;
@@ -11,12 +15,8 @@ import com.hbm.util.Compat;
 import com.hbm.util.I18nUtil;
 
 import api.hbm.block.IToolable;
-import api.hbm.energymk2.IEnergyConnectorBlock;
-import api.hbm.energymk2.IEnergyConnectorMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.energymk2.Nodespace;
-import api.hbm.energymk2.Nodespace.PowerNode;
-import api.hbm.energymk2.IEnergyReceiverMK2.ConnectionPriority;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,7 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class CableDiode extends BlockContainer implements IEnergyConnectorBlock, ILookOverlay, IToolable, ITooltipProvider {
+public class CableDiode extends BlockContainer implements INodeConnector, ILookOverlay, IToolable, ITooltipProvider {
 	
 	public CableDiode(Material mat) {
 		super(mat);
@@ -72,8 +72,8 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 	}
 
 	@Override
-	public boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir) {
-		return true;
+	public boolean canConnect(ForgeDirection dir, NetType type) {
+		return type == NetType.ENERGY;
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 		return new TileEntityDiode();
 	}
 	
-	public static class TileEntityDiode extends TileEntityLoadedBase implements IEnergyReceiverMK2 {
+	public static class TileEntityDiode extends TileEntityLoadedBase implements IEnergyReceiver {
 		
 		@Override
 		public void readFromNBT(NBTTagCompound nbt) {
@@ -194,8 +194,8 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 		}
 
 		@Override
-		public boolean canConnect(ForgeDirection dir) {
-			return dir != getDir();
+		public boolean canConnect(ForgeDirection dir, NetType type) {
+			return dir != getDir() && type == NetType.ENERGY;
 		}
 		
 		/** Used as an intra-tick tracker for how much energy has been transmitted, resets to 0 each tick and maxes out based on transfer */
@@ -216,19 +216,19 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 			recursionBrake = true;
 			
 			ForgeDirection dir = getDir();
-			PowerNode node = Nodespace.getNode(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+			Node node = Nodespace.getNode(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
 			TileEntity te = Compat.getTileStandard(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
 			
-			if(node != null && !node.expired && node.hasValidNet() && te instanceof IEnergyConnectorMK2 && ((IEnergyConnectorMK2) te).canConnect(dir.getOpposite())) {
+			if(node != null && !node.expired && node.hasValidNet() && te instanceof INodeConnector && ((INodeConnector) te).canConnect(dir.getOpposite(), node.net.netType)) {
 				long toTransfer = Math.min(power, this.getReceiverSpeed());
-				long remainder = node.net.sendPowerDiode(toTransfer);
+				long remainder = node.net.sendDiode(toTransfer);
 				long transferred = (toTransfer - remainder);
 				this.power += transferred;
 				power -= transferred;
 				
-			} else if(te instanceof IEnergyReceiverMK2 && te != this) {
-				IEnergyReceiverMK2 rec = (IEnergyReceiverMK2) te;
-				if(rec.canConnect(dir.getOpposite())) {
+			} else if(node != null && !node.expired && node.hasValidNet() && te instanceof IEnergyReceiver && te != this) {
+				IEnergyReceiver rec = (IEnergyReceiver) te;
+				if(rec.canConnect(dir.getOpposite(), node.net.netType)) {
 					long toTransfer = Math.min(power, rec.getReceiverSpeed());
 					long remainder = rec.transferPower(toTransfer);
 					power -= (toTransfer - remainder);

@@ -1,10 +1,11 @@
 package com.hbm.tileentity.network;
 
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.Nodespace.PowerNode;
+import api.hbm.nodespace.Nodespace.Node;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
@@ -36,14 +37,14 @@ public class TileEntityPylonMedium extends TileEntityPylonBase {
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
-		return this.hasTransformer() ? ForgeDirection.getOrientation(this.getBlockMetadata() - 10).getOpposite() == dir : false;
+	public boolean canConnect(ForgeDirection dir, NetType type) {
+		return (this.hasTransformer() ? ForgeDirection.getOrientation(this.getBlockMetadata() - 10).getOpposite() == dir : false) && type == NetType.ENERGY;
 	}
 
 	@Override
-	public PowerNode createNode() {
+	public Node createNode() {
 		TileEntity tile = (TileEntity) this;
-		PowerNode node = new PowerNode(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord)).setConnections(new DirPos(xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN));
+		Node node = new Node(new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord)).setConnections(new DirPos(xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN));
 		for(int[] pos : this.connected) node.addConnection(new DirPos(pos[0], pos[1], pos[2], ForgeDirection.UNKNOWN));
 		if(this.hasTransformer()) {
 			ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10).getOpposite();

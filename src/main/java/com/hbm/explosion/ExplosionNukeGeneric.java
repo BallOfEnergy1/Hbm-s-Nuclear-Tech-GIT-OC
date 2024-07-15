@@ -3,6 +3,7 @@ package com.hbm.explosion;
 import java.util.List;
 import java.util.Random;
 
+import api.hbm.energymk2.IEnergyHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -31,7 +32,6 @@ import com.hbm.lib.Library;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.util.ArmorUtil;
 
-import api.hbm.energymk2.IEnergyHandlerMK2;
 import cofh.api.energy.IEnergyProvider;
 
 public class ExplosionNukeGeneric {
@@ -425,8 +425,8 @@ public class ExplosionNukeGeneric {
 			Block b = world.getBlock(x,y,z);
 			TileEntity te = world.getTileEntity(x, y, z);
 			
-			if (te != null && te instanceof IEnergyHandlerMK2) {
-				((IEnergyHandlerMK2)te).setPower(0);
+			if (te != null && te instanceof IEnergyHandler) {
+				((IEnergyHandler)te).setPower(0);
 				if(random.nextInt(5) < 1) world.setBlock(x, y, z, ModBlocks.block_electrical_scrap);
 			}
 			if (te != null && te instanceof IEnergyProvider) {

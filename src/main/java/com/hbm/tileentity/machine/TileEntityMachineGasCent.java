@@ -20,7 +20,7 @@ import com.hbm.util.CompatEnergyControl;
 import com.hbm.util.InventoryUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.fluid.IFluidStandardReceiver;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
@@ -38,7 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 //epic!
-public class TileEntityMachineGasCent extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IInfoProviderEC {
+public class TileEntityMachineGasCent extends TileEntityMachineBase implements IEnergyReceiver, IFluidStandardReceiver, IGUIProvider, IInfoProviderEC {
 	
 	public long power;
 	public int progress;

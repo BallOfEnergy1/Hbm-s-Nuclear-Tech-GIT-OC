@@ -2,12 +2,13 @@ package com.hbm.tileentity;
 
 
 import api.hbm.block.ICrucibleAcceptor;
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.handler.CompatHandler.OCComponent;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.fluid.FluidType;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidConnector;
 import api.hbm.tile.IHeatSource;
 import com.hbm.inventory.material.Mats;
@@ -27,7 +28,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 		@Optional.Interface(iface = "com.hbm.handler.CompatHandler.OCComponent", modid = "opencomputers"),
 		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")
 })
-public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergyReceiverMK2, IFluidAcceptor, ISidedInventory, IFluidConnector, IHeatSource, ICrucibleAcceptor, SimpleComponent, OCComponent {
+public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergyReceiver, IFluidAcceptor, ISidedInventory, IFluidConnector, IHeatSource, ICrucibleAcceptor, SimpleComponent, OCComponent {
 	
 	TileEntity tile;
 	boolean inventory;
@@ -178,8 +179,8 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		if(!power)
 			return;
 		
-		if(getTile() instanceof IEnergyReceiverMK2) {
-			((IEnergyReceiverMK2)getTile()).setPower(i);
+		if(getTile() instanceof IEnergyReceiver) {
+			((IEnergyReceiver)getTile()).setPower(i);
 		}
 	}
 
@@ -189,8 +190,8 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		if(!power)
 			return 0;
 		
-		if(getTile() instanceof IEnergyReceiverMK2) {
-			return ((IEnergyReceiverMK2)getTile()).getPower();
+		if(getTile() instanceof IEnergyReceiver) {
+			return ((IEnergyReceiver)getTile()).getPower();
 		}
 		
 		return 0;
@@ -202,8 +203,8 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		if(!power)
 			return 0;
 		
-		if(getTile() instanceof IEnergyReceiverMK2) {
-			return ((IEnergyReceiverMK2)getTile()).getMaxPower();
+		if(getTile() instanceof IEnergyReceiver) {
+			return ((IEnergyReceiver)getTile()).getMaxPower();
 		}
 		
 		return 0;
@@ -215,21 +216,21 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		if(!this.power)
 			return power;
 		
-		if(getTile() instanceof IEnergyReceiverMK2) {
-			return ((IEnergyReceiverMK2)getTile()).transferPower(power);
+		if(getTile() instanceof IEnergyReceiver) {
+			return ((IEnergyReceiver)getTile()).transferPower(power);
 		}
 		
 		return power;
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, NetType type) {
 		
 		if(!power)
 			return false;
 		
-		if(getTile() instanceof IEnergyReceiverMK2) {
-			return ((IEnergyReceiverMK2)getTile()).canConnect(dir);
+		if(getTile() instanceof IEnergyReceiver) {
+			return ((IEnergyReceiver)getTile()).canConnect(dir, type);
 		}
 		
 		return true;

@@ -1,18 +1,18 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.CompatEnergyControl;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.tile.IInfoProviderEC;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineAmgen extends TileEntityLoadedBase implements IEnergyProviderMK2, IInfoProviderEC {
+public class TileEntityMachineAmgen extends TileEntityLoadedBase implements IEnergyProvider, IInfoProviderEC {
 
 	public long power;
 	public long maxPower = 500;

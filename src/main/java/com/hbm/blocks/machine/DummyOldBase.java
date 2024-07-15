@@ -2,12 +2,13 @@ package com.hbm.blocks.machine;
 
 import java.util.Random;
 
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.interfaces.IDummy;
 import com.hbm.interfaces.IMultiblock;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.tileentity.machine.TileEntityDummy;
 
-import api.hbm.energymk2.IEnergyConnectorBlock;
+import api.hbm.nodespace.INodeConnector;
 import api.hbm.fluid.IFluidConnectorBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -18,7 +19,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class DummyOldBase extends BlockContainer implements IDummy, IEnergyConnectorBlock, IFluidConnectorBlock {
+public abstract class DummyOldBase extends BlockContainer implements IDummy, INodeConnector, IFluidConnectorBlock {
 
 	public static boolean safeBreak = false;
 	private boolean port = false;
@@ -69,6 +70,6 @@ public abstract class DummyOldBase extends BlockContainer implements IDummy, IEn
 		return null;
 	}
 
-	@Override public boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir) { return port; }
+	@Override public boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir, NetType type) { return port; }
 	@Override public boolean canConnect(FluidType type, IBlockAccess world, int x, int y, int z, ForgeDirection dir) { return port; }
 }

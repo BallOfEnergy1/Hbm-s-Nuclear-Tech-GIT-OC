@@ -1,5 +1,6 @@
 package com.hbm.tileentity.machine.oil;
 
+import api.hbm.nodespace.Net;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.container.ContainerMachineCatalyticReformer;
@@ -16,7 +17,7 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.Tuple.Triplet;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,7 +29,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineCatalyticReformer extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiver, IPersistentNBT, IGUIProvider {
+public class TileEntityMachineCatalyticReformer extends TileEntityMachineBase implements IEnergyReceiver, IFluidStandardTransceiver, IPersistentNBT, IGUIProvider {
 	
 	public long power;
 	public static final long maxPower = 1_000_000;
@@ -218,7 +219,7 @@ public class TileEntityMachineCatalyticReformer extends TileEntityMachineBase im
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.UNKNOWN && dir != ForgeDirection.DOWN;
 	}
 

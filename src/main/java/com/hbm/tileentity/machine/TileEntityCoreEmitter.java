@@ -1,8 +1,9 @@
 package com.hbm.tileentity.machine;
 
 import api.hbm.block.ILaserable;
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.fluid.IFluidStandardReceiver;
+import api.hbm.nodespace.Net;
 import api.hbm.tile.IInfoProviderEC;
 
 import com.hbm.handler.CompatHandler;
@@ -38,7 +39,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.List;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityCoreEmitter extends TileEntityMachineBase implements IEnergyReceiverMK2, ILaserable, IFluidStandardReceiver, SimpleComponent, IGUIProvider, IInfoProviderEC, CompatHandler.OCComponent {
+public class TileEntityCoreEmitter extends TileEntityMachineBase implements IEnergyReceiver, ILaserable, IFluidStandardReceiver, SimpleComponent, IGUIProvider, IInfoProviderEC, CompatHandler.OCComponent {
 	
 	public long power;
 	public static final long maxPower = 1000000000L;
@@ -215,7 +216,7 @@ public class TileEntityCoreEmitter extends TileEntityMachineBase implements IEne
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.UNKNOWN;
 	}
 

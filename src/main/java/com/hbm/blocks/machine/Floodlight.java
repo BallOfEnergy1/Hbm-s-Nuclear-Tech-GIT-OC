@@ -6,10 +6,10 @@ import com.hbm.util.Compat;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 
 import api.hbm.block.IToolable;
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import api.hbm.energymk2.IEnergyReceiver;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -84,7 +84,7 @@ public class Floodlight extends BlockContainer implements IToolable {
 		}
 	}
 	
-	public static class TileEntityFloodlight extends TileEntity implements IEnergyReceiverMK2 {
+	public static class TileEntityFloodlight extends TileEntity implements IEnergyReceiver {
 		
 		public float rotation;
 		protected BlockPos[] lightPos = new BlockPos[15];

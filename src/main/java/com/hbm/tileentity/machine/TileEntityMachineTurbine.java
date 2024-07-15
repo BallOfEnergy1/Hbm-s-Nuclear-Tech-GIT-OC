@@ -1,5 +1,6 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.handler.CompatHandler;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.container.ContainerMachineTurbine;
@@ -17,7 +18,6 @@ import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.CompatEnergyControl;
 
 import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.common.Optional;
@@ -39,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityMachineTurbine extends TileEntityLoadedBase implements ISidedInventory, IFluidContainer, IEnergyProviderMK2, IFluidStandardTransceiver, IGUIProvider, SimpleComponent, IInfoProviderEC, CompatHandler.OCComponent {
+public class TileEntityMachineTurbine extends TileEntityLoadedBase implements ISidedInventory, IFluidContainer, IEnergyProvider, IFluidStandardTransceiver, IGUIProvider, SimpleComponent, IInfoProviderEC, CompatHandler.OCComponent {
 
 	private ItemStack slots[];
 

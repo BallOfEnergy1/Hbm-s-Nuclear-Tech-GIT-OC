@@ -1,15 +1,15 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyReceiver;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.tileentity.TileEntityMachineBase;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiver {
+public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implements IEnergyReceiver, IFluidStandardTransceiver {
 	
 	public long power = 0;
 	public FluidTank[] tanks;

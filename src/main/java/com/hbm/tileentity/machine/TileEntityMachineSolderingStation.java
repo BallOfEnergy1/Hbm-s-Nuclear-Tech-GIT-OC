@@ -22,7 +22,7 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.fluid.IFluidStandardReceiver;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
@@ -38,7 +38,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineSolderingStation extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IUpgradeInfoProvider {
+public class TileEntityMachineSolderingStation extends TileEntityMachineBase implements IEnergyReceiver, IFluidStandardReceiver, IGUIProvider, IUpgradeInfoProvider {
 
 	public long power;
 	public long maxPower = 2_000;

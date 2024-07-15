@@ -6,7 +6,7 @@ import java.util.List;
 import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.Entity;
@@ -29,7 +29,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineTeleporter extends TileEntityLoadedBase implements IEnergyReceiverMK2, INBTPacketReceiver {
+public class TileEntityMachineTeleporter extends TileEntityLoadedBase implements IEnergyReceiver, INBTPacketReceiver {
 
 	public long power = 0;
 	public int targetX = -1;

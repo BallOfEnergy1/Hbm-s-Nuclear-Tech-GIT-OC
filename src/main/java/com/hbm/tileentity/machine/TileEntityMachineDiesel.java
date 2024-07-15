@@ -3,6 +3,7 @@ package com.hbm.tileentity.machine;
 import java.io.IOException;
 import java.util.HashMap;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
@@ -25,7 +26,6 @@ import com.hbm.tileentity.TileEntityMachinePolluting;
 import com.hbm.util.CompatEnergyControl;
 
 import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.relauncher.Side;
@@ -38,7 +38,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineDiesel extends TileEntityMachinePolluting implements IEnergyProviderMK2, IFluidContainer, IFluidAcceptor, IFluidStandardTransceiver, IConfigurableMachine, IGUIProvider, IInfoProviderEC {
+public class TileEntityMachineDiesel extends TileEntityMachinePolluting implements IEnergyProvider, IFluidContainer, IFluidAcceptor, IFluidStandardTransceiver, IConfigurableMachine, IGUIProvider, IInfoProviderEC {
 
 	public long power;
 	public int soundCycle = 0;

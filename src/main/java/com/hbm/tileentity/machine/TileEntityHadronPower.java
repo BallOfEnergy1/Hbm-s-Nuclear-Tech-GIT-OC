@@ -6,14 +6,14 @@ import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IBufPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityHadronPower extends TileEntityLoadedBase implements IEnergyReceiverMK2, IBufPacketReceiver {
+public class TileEntityHadronPower extends TileEntityLoadedBase implements IEnergyReceiver, IBufPacketReceiver {
 
 	public long power;
 

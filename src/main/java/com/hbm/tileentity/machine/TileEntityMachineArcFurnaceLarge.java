@@ -31,7 +31,7 @@ import com.hbm.util.CrucibleUtil;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -47,7 +47,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineArcFurnaceLarge extends TileEntityMachineBase implements IEnergyReceiverMK2, IControlReceiver, IGUIProvider, IUpgradeInfoProvider {
+public class TileEntityMachineArcFurnaceLarge extends TileEntityMachineBase implements IEnergyReceiver, IControlReceiver, IGUIProvider, IUpgradeInfoProvider {
 	
 	public long power;
 	public static final long maxPower = 2_500_000;

@@ -2,6 +2,7 @@ package com.hbm.render.tileentity;
 
 import org.lwjgl.opengl.GL11;
 
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.lib.Library;
 import com.hbm.main.ResourceManager;
@@ -33,22 +34,22 @@ public class RenderRTG extends TileEntitySpecialRenderer {
         int iy = te.yCoord;
         int iz = te.zCoord;
 
-        if(Library.canConnect(te.getWorldObj(), ix + 1, iy, iz, Library.POS_X))
+        if(Library.canConnect(te.getWorldObj(), ix + 1, iy, iz, Library.POS_X, NetType.ENERGY))
             ResourceManager.rtg.renderPart("Connector");
         
-        if(Library.canConnect(te.getWorldObj(), ix - 1, iy, iz, Library.NEG_X)) {
+        if(Library.canConnect(te.getWorldObj(), ix - 1, iy, iz, Library.NEG_X, NetType.ENERGY)) {
     		GL11.glRotatef(180, 0F, 1F, 0F);
             ResourceManager.rtg.renderPart("Connector");
     		GL11.glRotatef(-180, 0F, 1F, 0F);
         }
         
-        if(Library.canConnect(te.getWorldObj(), ix, iy, iz - 1, Library.NEG_Z)) {
+        if(Library.canConnect(te.getWorldObj(), ix, iy, iz - 1, Library.NEG_Z, NetType.ENERGY)) {
     		GL11.glRotatef(90, 0F, 1F, 0F);
             ResourceManager.rtg.renderPart("Connector");
     		GL11.glRotatef(-90, 0F, 1F, 0F);
         }
         
-        if(Library.canConnect(te.getWorldObj(), ix, iy, iz + 1, Library.POS_Z)) {
+        if(Library.canConnect(te.getWorldObj(), ix, iy, iz + 1, Library.POS_Z, NetType.ENERGY)) {
     		GL11.glRotatef(-90, 0F, 1F, 0F);
             ResourceManager.rtg.renderPart("Connector");
     		GL11.glRotatef(90, 0F, 1F, 0F);

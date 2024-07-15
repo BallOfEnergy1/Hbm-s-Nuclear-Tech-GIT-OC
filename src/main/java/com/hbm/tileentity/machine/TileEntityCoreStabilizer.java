@@ -1,5 +1,7 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net;
 import com.hbm.handler.CompatHandler;
 import com.hbm.inventory.container.ContainerCoreStabilizer;
 import com.hbm.inventory.gui.GUICoreStabilizer;
@@ -9,7 +11,6 @@ import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.CompatEnergyControl;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
@@ -29,7 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityCoreStabilizer extends TileEntityMachineBase implements IEnergyReceiverMK2, SimpleComponent, IGUIProvider, IInfoProviderEC, CompatHandler.OCComponent {
+public class TileEntityCoreStabilizer extends TileEntityMachineBase implements IEnergyReceiver, SimpleComponent, IGUIProvider, IInfoProviderEC, CompatHandler.OCComponent {
 
 	public long power;
 	public static final long maxPower = 2500000000L;
@@ -139,7 +140,7 @@ public class TileEntityCoreStabilizer extends TileEntityMachineBase implements I
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.UNKNOWN;
 	}
 	

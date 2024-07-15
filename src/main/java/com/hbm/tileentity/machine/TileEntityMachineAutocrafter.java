@@ -11,7 +11,7 @@ import com.hbm.tileentity.IControlReceiverFilter;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -28,8 +28,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineAutocrafter extends TileEntityMachineBase implements IEnergyReceiverMK2, IGUIProvider, IControlReceiverFilter {
-
+public class TileEntityMachineAutocrafter extends TileEntityMachineBase implements IEnergyReceiver, IGUIProvider, IFilterable {
 	
 	public List<IRecipe> recipes = new ArrayList();
 	public int recipeIndex;

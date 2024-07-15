@@ -4,8 +4,8 @@ import com.hbm.lib.Library;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.Nodespace;
-import api.hbm.energymk2.Nodespace.PowerNode;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -100,8 +100,8 @@ public class TileEntityMachineFENSU extends TileEntityMachineBattery {
 	}
 
 	@Override
-	public PowerNode createNode() {
-		return new PowerNode(new BlockPos(xCoord, yCoord, zCoord)).setConnections(new DirPos(xCoord, yCoord - 1, zCoord, Library.NEG_Y));
+	public Node createNode() {
+		return new Node(new BlockPos(xCoord, yCoord, zCoord)).setConnections(new DirPos(xCoord, yCoord - 1, zCoord, Library.NEG_Y));
 	}
 
 	@Override

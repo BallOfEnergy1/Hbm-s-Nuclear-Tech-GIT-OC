@@ -13,7 +13,7 @@ import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 
 import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -24,7 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineBase implements IEnergyReceiverMK2, IGUIProvider {
+public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineBase implements IEnergyReceiver, IGUIProvider {
 
 	public long power = 0;
 	public int process = 0;

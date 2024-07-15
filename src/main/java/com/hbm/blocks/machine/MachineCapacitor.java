@@ -3,6 +3,8 @@ package com.hbm.blocks.machine;
 import java.util.ArrayList;
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyProvider;
+import api.hbm.nodespace.Net.NetType;
 import org.lwjgl.input.Keyboard;
 
 import com.hbm.blocks.ILookOverlay;
@@ -19,8 +21,7 @@ import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
@@ -150,7 +151,7 @@ public class MachineCapacitor extends BlockContainer implements ILookOverlay, IP
 		player.addExhaustion(0.025F);
 	}
 
-	public static class TileEntityCapacitor extends TileEntityLoadedBase implements IEnergyProviderMK2, IEnergyReceiverMK2, IBufPacketReceiver, IPersistentNBT {
+	public static class TileEntityCapacitor extends TileEntityLoadedBase implements IEnergyProvider, IEnergyReceiver, IBufPacketReceiver, IPersistentNBT {
 		
 		public long power;
 		protected long maxPower;
@@ -260,8 +261,8 @@ public class MachineCapacitor extends BlockContainer implements ILookOverlay, IP
 		}
 		
 		@Override
-		public boolean canConnect(ForgeDirection dir) {
-			return dir == ForgeDirection.getOrientation(this.getBlockMetadata());
+		public boolean canConnect(ForgeDirection dir, NetType type) {
+			return dir == ForgeDirection.getOrientation(this.getBlockMetadata()) && type == NetType.ENERGY;
 		}
 
 		@Override

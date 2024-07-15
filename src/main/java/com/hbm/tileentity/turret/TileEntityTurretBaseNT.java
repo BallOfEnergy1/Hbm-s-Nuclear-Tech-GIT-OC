@@ -28,7 +28,7 @@ import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.CompatExternal;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.entity.IRadarDetectableNT;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
@@ -65,7 +65,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  */
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase implements IEnergyReceiverMK2, IControlReceiver, IGUIProvider, SimpleComponent, CompatHandler.OCComponent {
+public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase implements IEnergyReceiver, IControlReceiver, IGUIProvider, SimpleComponent, CompatHandler.OCComponent {
 
 	@Override
 	public boolean hasPermission(EntityPlayer player) {

@@ -1,5 +1,6 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.config.VersatileConfig;
 import com.hbm.inventory.container.ContainerMachineRTG;
 import com.hbm.inventory.gui.GUIMachineRTG;
@@ -11,7 +12,6 @@ import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.CompatEnergyControl;
 import com.hbm.util.RTGUtil;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
@@ -26,7 +26,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISidedInventory, IEnergyProviderMK2, IGUIProvider, IInfoProviderEC {
+public class TileEntityMachineRTG extends TileEntityLoadedBase implements ISidedInventory, IEnergyProvider, IGUIProvider, IInfoProviderEC {
 
 	private ItemStack slots[];
 	

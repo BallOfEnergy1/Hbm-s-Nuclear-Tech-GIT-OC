@@ -4,10 +4,10 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileEntityMachinePumpElectric extends TileEntityMachinePumpBase implements IEnergyReceiverMK2 {
+public class TileEntityMachinePumpElectric extends TileEntityMachinePumpBase implements IEnergyReceiver {
 	
 	public long power;
 	public static final long maxPower = 10_000;

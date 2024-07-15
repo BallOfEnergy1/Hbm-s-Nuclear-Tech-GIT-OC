@@ -3,9 +3,9 @@ package com.hbm.tileentity.network;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.tileentity.IConfigurableMachine;
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.tileentity.TileEntityLoadedBase;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.io.IOException;
 
-public class TileEntityConverterRfHe extends TileEntityLoadedBase implements IEnergyProviderMK2, IEnergyHandler, IConfigurableMachine {
+public class TileEntityConverterRfHe extends TileEntityLoadedBase implements IEnergyProvider, IEnergyHandler {
 
 	public long power;
 	public final long maxPower = 5_000_000;

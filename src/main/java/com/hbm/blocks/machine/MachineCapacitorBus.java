@@ -2,10 +2,12 @@ package com.hbm.blocks.machine;
 
 import java.util.List;
 
+import api.hbm.nodespace.Nodespace;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.lib.RefStrings;
 
-import api.hbm.energymk2.IEnergyConnectorBlock;
+import api.hbm.nodespace.INodeConnector;
+import api.hbm.nodespace.Net.NetType;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -20,7 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class MachineCapacitorBus extends Block implements IEnergyConnectorBlock, ITooltipProvider {
+public class MachineCapacitorBus extends Block implements INodeConnector, ITooltipProvider {
 	
 	@SideOnly(Side.CLIENT) private IIcon topIcon;
 
@@ -46,10 +48,10 @@ public class MachineCapacitorBus extends Block implements IEnergyConnectorBlock,
 	}
 
 	@Override
-	public boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir) {
+	public boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir, NetType type) {
 		int meta = world.getBlockMetadata(x, y, z);
 		ForgeDirection busDir = ForgeDirection.getOrientation(meta);
-		return dir == busDir;
+		return dir == busDir && type == NetType.ENERGY;
 	}
 
 	@Override

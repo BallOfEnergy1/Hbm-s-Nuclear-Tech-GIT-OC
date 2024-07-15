@@ -1,14 +1,15 @@
 package com.hbm.tileentity.network;
 
-import api.hbm.energymk2.IEnergyConductorMK2;
-import api.hbm.energymk2.Nodespace;
-import api.hbm.energymk2.Nodespace.PowerNode;
+import api.hbm.nodespace.INodeConductor;
+import api.hbm.nodespace.Net.NetType;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityCableBaseNT extends TileEntity implements IEnergyConductorMK2 {
+public class TileEntityCableBaseNT extends TileEntity implements INodeConductor {
 	
-	protected PowerNode node;
+	protected Node node;
 
 	@Override
 	public void updateEntity() {
@@ -49,7 +50,12 @@ public class TileEntityCableBaseNT extends TileEntity implements IEnergyConducto
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
-		return dir != ForgeDirection.UNKNOWN;
+	public boolean canConnect(ForgeDirection dir, NetType type) {
+		return dir != ForgeDirection.UNKNOWN && type == NetType.ENERGY;
+	}
+
+	@Override
+	public NetType nodeType() {
+		return NetType.ENERGY;
 	}
 }
