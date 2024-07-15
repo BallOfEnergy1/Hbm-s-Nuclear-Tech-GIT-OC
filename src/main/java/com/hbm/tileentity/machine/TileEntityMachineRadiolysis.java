@@ -3,6 +3,7 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.interfaces.IFluidSource;
@@ -24,7 +25,6 @@ import com.hbm.util.RTGUtil;
 import com.hbm.util.Tuple.Pair;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.relauncher.Side;
@@ -39,7 +39,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineRadiolysis extends TileEntityMachineBase implements IEnergyProviderMK2, IFluidAcceptor, IFluidSource, IFluidContainer, IFluidStandardTransceiver, IGUIProvider, IInfoProviderEC {
+public class TileEntityMachineRadiolysis extends TileEntityMachineBase implements IEnergyProvider, IFluidAcceptor, IFluidSource, IFluidContainer, IFluidStandardTransceiver, IGUIProvider, IInfoProviderEC {
 	
 	public long power;
 	public static final int maxPower = 1000000;

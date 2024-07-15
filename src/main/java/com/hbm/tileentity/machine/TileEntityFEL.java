@@ -3,6 +3,7 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyReceiver;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.MachineSILEX;
@@ -21,7 +22,6 @@ import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -43,7 +43,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityFEL extends TileEntityMachineBase implements IEnergyReceiverMK2, IGUIProvider {
+public class TileEntityFEL extends TileEntityMachineBase implements IEnergyReceiver, IGUIProvider {
 	
 	public long power;
 	public static final long maxPower = 20000000;

@@ -1,13 +1,14 @@
 package com.hbm.blocks.generic;
 
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.blocks.BlockBase;
 
-import api.hbm.energymk2.IEnergyConnectorBlock;
+import api.hbm.nodespace.INodeConnector;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockCableConnect extends BlockBase implements IEnergyConnectorBlock {
+public class BlockCableConnect extends BlockBase implements INodeConnector {
 
 	public BlockCableConnect() {
 		super();
@@ -18,7 +19,7 @@ public class BlockCableConnect extends BlockBase implements IEnergyConnectorBloc
 	}
 
 	@Override
-	public boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir) {
+	public boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir, NetType type) {
 		return true;
 	}
 }

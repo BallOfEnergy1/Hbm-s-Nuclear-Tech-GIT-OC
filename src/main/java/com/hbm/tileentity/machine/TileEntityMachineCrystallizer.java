@@ -23,7 +23,7 @@ import com.hbm.util.I18nUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
 import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.fluid.IFluidStandardReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,7 +39,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineCrystallizer extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IUpgradeInfoProvider {
+public class TileEntityMachineCrystallizer extends TileEntityMachineBase implements IEnergyReceiver, IFluidStandardReceiver, IGUIProvider, IUpgradeInfoProvider {
 	
 	public long power;
 	public static final long maxPower = 1000000;

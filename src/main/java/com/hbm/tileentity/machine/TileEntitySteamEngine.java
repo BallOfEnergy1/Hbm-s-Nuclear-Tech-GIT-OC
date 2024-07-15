@@ -2,6 +2,8 @@ package com.hbm.tileentity.machine;
 
 import java.io.IOException;
 
+import api.hbm.energymk2.IEnergyProvider;
+import api.hbm.nodespace.Net;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
@@ -14,7 +16,6 @@ import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,7 +25,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySteamEngine extends TileEntityLoadedBase implements IEnergyProviderMK2, IFluidStandardTransceiver, INBTPacketReceiver, IConfigurableMachine {
+public class TileEntitySteamEngine extends TileEntityLoadedBase implements IEnergyProvider, IFluidStandardTransceiver, INBTPacketReceiver, IConfigurableMachine {
 
 	public long powerBuffer;
 
@@ -172,7 +173,7 @@ public class TileEntitySteamEngine extends TileEntityLoadedBase implements IEner
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.UP && dir != ForgeDirection.DOWN && dir != ForgeDirection.UNKNOWN;
 	}
 

@@ -33,7 +33,7 @@ import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 import com.hbm.world.WorldUtil;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.entity.IRadarDetectable;
 import api.hbm.entity.IRadarDetectableNT;
 import api.hbm.entity.IRadarDetectableNT.RadarScanParams;
@@ -67,7 +67,7 @@ import net.minecraft.world.WorldServer;
  * @author hbm
  */
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityMachineRadarNT extends TileEntityMachineBase implements IEnergyReceiverMK2, IGUIProvider, IConfigurableMachine, IControlReceiver, SimpleComponent, CompatHandler.OCComponent {
+public class TileEntityMachineRadarNT extends TileEntityMachineBase implements IEnergyReceiver, IGUIProvider, IConfigurableMachine, IControlReceiver, SimpleComponent, CompatHandler.OCComponent {
 
 	public boolean scanMissiles = true;
 	public boolean scanShells = true;

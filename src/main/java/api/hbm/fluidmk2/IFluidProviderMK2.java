@@ -1,26 +1,28 @@
-package api.hbm.energymk2;
+package api.hbm.fluidmk2;
 
+import api.hbm.nodespace.INodeConductor;
+import api.hbm.nodespace.INodeProvider;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.Compat;
-
-import api.hbm.energymk2.Nodespace.PowerNode;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-/** If it sends energy, use this */
-public interface IEnergyProviderMK2 extends IEnergyHandlerMK2 {
+/** If it sends fluid, use this */
+public interface IFluidProviderMK2 extends IFluidHandler, INodeProvider {
 
 	/** Uses up available power, default implementation has no sanity checking, make sure that the requested power is lequal to the current power */
-	public default void usePower(long power) {
-		this.setPower(this.getPower() - power);
+	public default void useFluid(long fluid) {
+		this.setFluid(this.getFluid() - fluid);
 	}
 	
 	public default long getProviderSpeed() {
-		return this.getMaxPower();
+		return this.getMaxAmount();
 	}
 	
 	public default void tryProvide(World world, int x, int y, int z, ForgeDirection dir) {
@@ -28,11 +30,11 @@ public interface IEnergyProviderMK2 extends IEnergyHandlerMK2 {
 		TileEntity te = Compat.getTileStandard(world, x, y, z);
 		boolean red = false;
 		
-		if(te instanceof IEnergyConductorMK2) {
-			IEnergyConductorMK2 con = (IEnergyConductorMK2) te;
-			if(con.canConnect(dir.getOpposite())) {
-				
-				PowerNode node = Nodespace.getNode(world, x, y, z);
+		if(te instanceof INodeConductor) {
+			INodeConductor con = (INodeConductor) te;
+			if(con.canConnect(dir.getOpposite(), con.nodeType())) {
+
+				Node node = Nodespace.getNode(world, x, y, z);
 				
 				if(node != null && node.net != null) {
 					node.net.addProvider(this);
@@ -41,14 +43,17 @@ public interface IEnergyProviderMK2 extends IEnergyHandlerMK2 {
 			}
 		}
 		
-		if(te instanceof IEnergyReceiverMK2 && te != this) {
-			IEnergyReceiverMK2 rec = (IEnergyReceiverMK2) te;
-			if(rec.canConnect(dir.getOpposite())) {
-				long provides = Math.min(this.getPower(), this.getProviderSpeed());
-				long receives = Math.min(rec.getMaxPower() - rec.getPower(), rec.getReceiverSpeed());
-				long toTransfer = Math.min(provides, receives);
-				toTransfer -= rec.transferPower(toTransfer);
-				this.usePower(toTransfer);
+		if(te instanceof IFluidReceiverMK2 && te != this) {
+			IFluidReceiverMK2 rec = (IFluidReceiverMK2) te;
+			Node node = Nodespace.getNode(world, x, y, z);
+			if(node != null && node.hasValidNet()) {
+				if (rec.canConnect(dir.getOpposite(), node.net.netType)) {
+					long provides = Math.min(this.getFluid(), this.getProviderSpeed());
+					long receives = Math.min(rec.getMaxFluid() - rec.getFluid(), rec.getReceiverSpeed());
+					long toTransfer = Math.min(provides, receives);
+					toTransfer -= rec.transferFluid(toTransfer);
+					this.useFluid(toTransfer);
+				}
 			}
 		}
 		

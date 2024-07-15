@@ -2,16 +2,16 @@ package com.hbm.items.tool;
 
 import java.util.List;
 
+import api.hbm.nodespace.INodeConductor;
+import api.hbm.nodespace.Net;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.ChatBuilder;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 
-import api.hbm.energymk2.IEnergyConductorMK2;
-import api.hbm.energymk2.Nodespace;
-import api.hbm.energymk2.Nodespace.PowerNode;
-import api.hbm.energymk2.PowerNetMK2;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,20 +44,21 @@ public class ItemPowerNetTool extends Item {
 		if(world.isRemote)
 			return true;
 		
-		if((te instanceof IEnergyConductorMK2)) {
-			PowerNode node = Nodespace.getNode(world, x, y, z);
+		if((te instanceof INodeConductor)) {
+			Node node = Nodespace.getNode(world, x, y, z);
 			
 			if(node != null && node.hasValidNet()) {
 				
-				PowerNetMK2 net = node.net;
+				Net net = node.net;
 				String id = Integer.toHexString(net.hashCode());
 				player.addChatComponentMessage(ChatBuilder.start("Start of diagnostic for network " + id).color(EnumChatFormatting.GOLD).flush());
 				player.addChatComponentMessage(ChatBuilder.start("Links: " + net.links.size()).color(EnumChatFormatting.YELLOW).flush());
 				player.addChatComponentMessage(ChatBuilder.start("Providers: " + net.providerEntries.size()).color(EnumChatFormatting.YELLOW).flush());
 				player.addChatComponentMessage(ChatBuilder.start("Receivers: " + net.receiverEntries.size()).color(EnumChatFormatting.YELLOW).flush());
+				player.addChatComponentMessage(ChatBuilder.start("Network Type: " + net.netType.name()).color(EnumChatFormatting.YELLOW).flush());
 				player.addChatComponentMessage(ChatBuilder.start("End of diagnostic for network " + id).color(EnumChatFormatting.GOLD).flush());
 				
-				for(PowerNode link : net.links) {
+				for(Node link : net.links) {
 					
 					for(BlockPos pos : link.positions) {
 						NBTTagCompound data = new NBTTagCompound();

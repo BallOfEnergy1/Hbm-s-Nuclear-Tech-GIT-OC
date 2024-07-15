@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import api.hbm.nodespace.INodeConnector;
+import api.hbm.nodespace.Net.NetType;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.entity.mob.EntityHunterChopper;
 import com.hbm.entity.projectile.EntityChopperMine;
@@ -16,8 +20,6 @@ import com.hbm.items.ModItems;
 import com.hbm.tileentity.TileEntityProxyInventory;
 
 import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyConnectorBlock;
-import api.hbm.energymk2.IEnergyConnectorMK2;
 import api.hbm.fluid.IFluidConnector;
 import api.hbm.fluid.IFluidConnectorBlock;
 import net.minecraft.block.Block;
@@ -57,27 +59,26 @@ public class Library {
 	/*
 	 * Is putting this into this trash can a good idea? No. Do I have a better idea? Not currently.
 	 */
-	public static boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir /* cable's connecting side */) {
+	public static boolean canConnect(IBlockAccess world, int x, int y, int z, ForgeDirection dir /* cable's connecting side */, NetType type) {
 		
 		if(y > 255 || y < 0)
 			return false;
 		
 		Block b = world.getBlock(x, y, z);
 		
-		if(b instanceof IEnergyConnectorBlock) {
-			IEnergyConnectorBlock con = (IEnergyConnectorBlock) b;
-			
-			if(con.canConnect(world, x, y, z, dir.getOpposite() /* machine's connecting side */))
+		if(b instanceof INodeConnector) {
+			INodeConnector con = (INodeConnector) b;
+
+			if(con.canConnect(world, x, y, z, dir.getOpposite() /* machine's connecting side */, type))
 				return true;
 		}
 		
 		TileEntity te = world.getTileEntity(x, y, z);
 		
-		if(te instanceof IEnergyConnectorMK2) {
-			IEnergyConnectorMK2 con = (IEnergyConnectorMK2) te;
-			
-			if(con.canConnect(dir.getOpposite() /* machine's connecting side */))
-				return true;
+		if(te instanceof INodeConnector) {
+			INodeConnector con = (INodeConnector) te;
+
+			return con.canConnect(dir.getOpposite() /* machine's connecting side */, type);
 		}
 		
 		return false;
@@ -91,8 +92,8 @@ public class Library {
 		
 		Block b = world.getBlock(x, y, z);
 		
-		if(b instanceof IFluidConnectorBlock) {
-			IFluidConnectorBlock con = (IFluidConnectorBlock) b;
+		if(b instanceof INodeConnector) {
+			INodeConnector con = (INodeConnector) b;
 			
 			if(con.canConnect(type, world, x, y, z, dir.getOpposite() /* machine's connecting side */))
 				return true;

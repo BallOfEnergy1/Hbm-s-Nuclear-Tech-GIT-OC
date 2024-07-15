@@ -1,6 +1,6 @@
 package com.hbm.tileentity.network;
 
-import api.hbm.energymk2.Nodespace;
+import api.hbm.nodespace.Nodespace;
 
 public class TileEntityCableSwitch extends TileEntityCableBaseNT {
 	

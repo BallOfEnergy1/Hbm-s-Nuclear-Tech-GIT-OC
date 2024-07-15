@@ -2,6 +2,7 @@ package com.hbm.tileentity.machine;
 
 import java.io.IOException;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
@@ -13,7 +14,6 @@ import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.tile.IHeatSource;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,7 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityStirling extends TileEntityLoadedBase implements INBTPacketReceiver, IEnergyProviderMK2, IConfigurableMachine {
+public class TileEntityStirling extends TileEntityLoadedBase implements INBTPacketReceiver, IEnergyProvider, IConfigurableMachine {
 	
 	public long powerBuffer;
 	public int heat;

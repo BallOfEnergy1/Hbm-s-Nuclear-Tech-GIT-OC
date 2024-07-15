@@ -2,6 +2,7 @@ package com.hbm.tileentity.machine;
 
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyReceiver;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.recipes.AssemblerRecipes;
 import com.hbm.items.ModItems;
@@ -13,14 +14,13 @@ import com.hbm.tileentity.machine.storage.TileEntityCrateTemplate;
 import com.hbm.util.InventoryUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public abstract class TileEntityMachineAssemblerBase extends TileEntityMachineBase implements IEnergyReceiverMK2, IGUIProvider {
+public abstract class TileEntityMachineAssemblerBase extends TileEntityMachineBase implements IEnergyReceiver, IGUIProvider {
 
 	public long power;
 	public int[] progress;

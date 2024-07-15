@@ -1,5 +1,6 @@
 package com.hbm.blocks.network;
 
+import api.hbm.nodespace.Net;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.network.TileEntityCableBaseNT;
@@ -48,12 +49,12 @@ public class BlockCable extends BlockContainer {
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
 		
-		boolean posX = Library.canConnect(world, x + 1, y, z, Library.POS_X);
-		boolean negX = Library.canConnect(world, x - 1, y, z, Library.NEG_X);
-		boolean posY = Library.canConnect(world, x, y + 1, z, Library.POS_Y);
-		boolean negY = Library.canConnect(world, x, y - 1, z, Library.NEG_Y);
-		boolean posZ = Library.canConnect(world, x, y, z + 1, Library.POS_Z);
-		boolean negZ = Library.canConnect(world, x, y, z - 1, Library.NEG_Z);
+		boolean posX = Library.canConnect(world, x + 1, y, z, Library.POS_X, Net.NetType.ENERGY);
+		boolean negX = Library.canConnect(world, x - 1, y, z, Library.NEG_X, Net.NetType.ENERGY);
+		boolean posY = Library.canConnect(world, x, y + 1, z, Library.POS_Y, Net.NetType.ENERGY);
+		boolean negY = Library.canConnect(world, x, y - 1, z, Library.NEG_Y, Net.NetType.ENERGY);
+		boolean posZ = Library.canConnect(world, x, y, z + 1, Library.POS_Z, Net.NetType.ENERGY);
+		boolean negZ = Library.canConnect(world, x, y, z - 1, Library.NEG_Z, Net.NetType.ENERGY);
 
 		setBlockBounds(posX, negX, posY, negY, posZ, negZ);
 		
@@ -63,12 +64,12 @@ public class BlockCable extends BlockContainer {
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
 		
-		boolean posX = Library.canConnect(world, x + 1, y, z, Library.POS_X);
-		boolean negX = Library.canConnect(world, x - 1, y, z, Library.NEG_X);
-		boolean posY = Library.canConnect(world, x, y + 1, z, Library.POS_Y);
-		boolean negY = Library.canConnect(world, x, y - 1, z, Library.NEG_Y);
-		boolean posZ = Library.canConnect(world, x, y, z + 1, Library.POS_Z);
-		boolean negZ = Library.canConnect(world, x, y, z - 1, Library.NEG_Z);
+		boolean posX = Library.canConnect(world, x + 1, y, z, Library.POS_X, Net.NetType.ENERGY);
+		boolean negX = Library.canConnect(world, x - 1, y, z, Library.NEG_X, Net.NetType.ENERGY);
+		boolean posY = Library.canConnect(world, x, y + 1, z, Library.POS_Y, Net.NetType.ENERGY);
+		boolean negY = Library.canConnect(world, x, y - 1, z, Library.NEG_Y, Net.NetType.ENERGY);
+		boolean posZ = Library.canConnect(world, x, y, z + 1, Library.POS_Z, Net.NetType.ENERGY);
+		boolean negZ = Library.canConnect(world, x, y, z - 1, Library.NEG_Z, Net.NetType.ENERGY);
 		
 		setBlockBounds(posX, negX, posY, negY, posZ, negZ);
 	}

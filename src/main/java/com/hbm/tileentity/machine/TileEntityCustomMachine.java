@@ -3,6 +3,8 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyProvider;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.tile.IHeatSource;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.ReactorResearch;
@@ -26,8 +28,6 @@ import com.hbm.util.Compat;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -41,7 +41,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityCustomMachine extends TileEntityMachinePolluting implements IFluidStandardTransceiver, IEnergyProviderMK2, IEnergyReceiverMK2, IGUIProvider {
+public class TileEntityCustomMachine extends TileEntityMachinePolluting implements IFluidStandardTransceiver, IEnergyProvider, IEnergyReceiver, IGUIProvider {
 
 	public String machineType;
 	public MachineConfiguration config;

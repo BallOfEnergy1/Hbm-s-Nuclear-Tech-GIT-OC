@@ -1,11 +1,12 @@
 package com.hbm.tileentity.machine.storage;
 
 import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyConductorMK2;
-import api.hbm.energymk2.IEnergyProviderMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.energymk2.Nodespace;
-import api.hbm.energymk2.Nodespace.PowerNode;
+import api.hbm.energymk2.IEnergyProvider;
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.INodeConductor;
+import api.hbm.nodespace.Net.NetType;
+import api.hbm.nodespace.Nodespace;
+import api.hbm.nodespace.Nodespace.Node;
 import api.hbm.tile.IInfoProviderEC;
 
 import com.hbm.blocks.machine.MachineBattery;
@@ -35,14 +36,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
-public class TileEntityMachineBattery extends TileEntityMachineBase implements IEnergyConductorMK2, IEnergyProviderMK2, IEnergyReceiverMK2, IPersistentNBT, SimpleComponent, IGUIProvider, IInfoProviderEC, CompatHandler.OCComponent {
+public class TileEntityMachineBattery extends TileEntityMachineBase implements INodeConductor, IEnergyProvider, IEnergyReceiver, IPersistentNBT, SimpleComponent, IGUIProvider, IInfoProviderEC, CompatHandler.OCComponent {
 	
 	public long[] log = new long[20];
 	public long delta = 0;
 	public long power = 0;
 	public long prevPowerState = 0;
 	
-	protected PowerNode node;
+	protected Node node;
 	
 	//0: input only
 	//1: buffer
@@ -147,6 +148,11 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 		}
 			
 		return false;
+	}
+
+	@Override
+	public NetType nodeType() {
+		return NetType.ENERGY;
 	}
 
 	public long getPowerRemainingScaled(long i) {
@@ -284,7 +290,7 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 		return bufferedMax;
 	}
 
-	@Override public boolean canConnect(ForgeDirection dir) { return true; }
+	@Override public boolean canConnect(ForgeDirection dir, NetType type) { return true; }
 	@Override public void setPower(long power) { this.power = power; }
 	@Override public ConnectionPriority getPriority() { return this.priority; }
 	

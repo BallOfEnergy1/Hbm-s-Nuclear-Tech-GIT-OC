@@ -2,6 +2,7 @@ package com.hbm.tileentity.machine;
 
 import java.util.HashMap;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.container.ContainerMachineRadGen;
@@ -14,7 +15,6 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.CompatEnergyControl;
 import com.hbm.util.Tuple.Triplet;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,7 +30,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineRadGen extends TileEntityMachineBase implements IEnergyProviderMK2, IGUIProvider, IInfoProviderEC {
+public class TileEntityMachineRadGen extends TileEntityMachineBase implements IEnergyProvider, IGUIProvider, IInfoProviderEC {
 
 	public int[] progress = new int[12];
 	public int[] maxProgress = new int[12];

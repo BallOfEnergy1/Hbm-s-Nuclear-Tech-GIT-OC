@@ -17,7 +17,6 @@ public class TileEntityProxyBase extends TileEntityLoadedBase {
 	}
 
 	public TileEntity getTE() {
-		
 		if(worldObj == null) return null;
 		
 		if(cachedPosition != null) {

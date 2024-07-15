@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.handler.CompatHandler;
 import cpw.mods.fml.common.Optional;
 import li.cil.oc.api.machine.Arguments;
@@ -37,7 +39,6 @@ import com.hbm.util.TrackerUtil;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import api.hbm.item.IDesignatorItem;
 import cpw.mods.fml.relauncher.Side;
@@ -56,7 +57,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IRadarCommandReceiver, SimpleComponent, CompatHandler.OCComponent {
+public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase implements IEnergyReceiver, IFluidStandardReceiver, IGUIProvider, IRadarCommandReceiver, SimpleComponent, CompatHandler.OCComponent {
 	
 	/** Automatic instantiation of generic missiles, i.e. everything that both extends EntityMissileBaseNT and needs a designator */
 	public static final HashMap<ComparableStack, Class<? extends EntityMissileBaseNT>> missiles = new HashMap();
@@ -271,8 +272,8 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	@Override public FluidTank[] getAllTanks() { return this.tanks; }
 	@Override public FluidTank[] getReceivingTanks() { return this.tanks; }
 	
-	@Override public boolean canConnect(ForgeDirection dir) {
-		return dir != ForgeDirection.UP && dir != ForgeDirection.DOWN;
+	@Override public boolean canConnect(ForgeDirection dir, NetType type) {
+		return dir != ForgeDirection.UP && dir != ForgeDirection.DOWN && type == NetType.ENERGY;
 	}
 
 	@Override

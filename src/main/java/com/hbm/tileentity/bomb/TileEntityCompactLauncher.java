@@ -2,6 +2,8 @@ package com.hbm.tileentity.bomb;
 
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.entity.missile.EntityMissileCustom;
 import com.hbm.handler.MissileStruct;
 import com.hbm.interfaces.IFluidAcceptor;
@@ -27,7 +29,6 @@ import com.hbm.tileentity.IRadarCommandReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import api.hbm.item.IDesignatorItem;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
@@ -48,7 +49,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityCompactLauncher extends TileEntityLoadedBase implements ISidedInventory, IFluidContainer, IFluidAcceptor, IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IRadarCommandReceiver {
+public class TileEntityCompactLauncher extends TileEntityLoadedBase implements ISidedInventory, IFluidContainer, IFluidAcceptor, IEnergyReceiver, IFluidStandardReceiver, IGUIProvider, IRadarCommandReceiver {
 
 	private ItemStack slots[];
 
@@ -630,7 +631,7 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, NetType type) {
 		return dir != ForgeDirection.UP && dir != ForgeDirection.UNKNOWN;
 	}
 

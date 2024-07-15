@@ -2,6 +2,8 @@ package com.hbm.tileentity.machine;
 
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net;
 import com.hbm.entity.item.EntityMovingItem;
 import com.hbm.inventory.recipes.PressRecipes;
 import com.hbm.items.machine.ItemStamp;
@@ -9,7 +11,6 @@ import com.hbm.lib.Library;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityConveyorPress extends TileEntityMachineBase implements IEnergyReceiverMK2 {
+public class TileEntityConveyorPress extends TileEntityMachineBase implements IEnergyReceiver {
 
 	public int usage = 100;
 	public long power = 0;
@@ -225,7 +226,7 @@ public class TileEntityConveyorPress extends TileEntityMachineBase implements IE
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.DOWN;
 	}
 	

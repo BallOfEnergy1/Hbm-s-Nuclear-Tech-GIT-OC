@@ -8,7 +8,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.tileentity.TileEntityTickingBase;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -18,7 +18,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityICFController extends TileEntityTickingBase implements IEnergyReceiverMK2 {
+public class TileEntityICFController extends TileEntityTickingBase implements IEnergyReceiver {
 	
 	public long power;
 	public int laserLength;

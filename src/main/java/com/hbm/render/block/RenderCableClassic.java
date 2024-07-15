@@ -1,5 +1,6 @@
 package com.hbm.render.block;
 
+import api.hbm.nodespace.Net.NetType;
 import org.lwjgl.opengl.GL11;
 
 import com.hbm.blocks.network.BlockCable;
@@ -163,12 +164,12 @@ public class RenderCableClassic implements ISimpleBlockRenderingHandler {
 		tessellator.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
 		tessellator.setColorOpaque_F(1, 1, 1);
 
-		boolean pX = Library.canConnect(world, x + 1, y, z, Library.POS_X);
-		boolean nX = Library.canConnect(world, x - 1, y, z, Library.NEG_X);
-		boolean pY = Library.canConnect(world, x, y + 1, z, Library.POS_Y);
-		boolean nY = Library.canConnect(world, x, y - 1, z, Library.NEG_Y);
-		boolean pZ = Library.canConnect(world, x, y, z + 1, Library.POS_Z);
-		boolean nZ = Library.canConnect(world, x, y, z - 1, Library.NEG_Z);
+		boolean pX = Library.canConnect(world, x + 1, y, z, Library.POS_X, NetType.ENERGY);
+		boolean nX = Library.canConnect(world, x - 1, y, z, Library.NEG_X, NetType.ENERGY);
+		boolean pY = Library.canConnect(world, x, y + 1, z, Library.POS_Y, NetType.ENERGY);
+		boolean nY = Library.canConnect(world, x, y - 1, z, Library.NEG_Y, NetType.ENERGY);
+		boolean pZ = Library.canConnect(world, x, y, z + 1, Library.POS_Z, NetType.ENERGY);
+		boolean nZ = Library.canConnect(world, x, y, z - 1, Library.NEG_Z, NetType.ENERGY);
 
 		double uv_cL = iicon.getMinU();
 		double uv_cR = iicon.getInterpolatedU(5);

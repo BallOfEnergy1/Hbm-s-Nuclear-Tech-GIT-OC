@@ -3,7 +3,6 @@ package com.hbm.tileentity.network;
 import com.hbm.calc.Location;
 import com.hbm.tileentity.TileEntityLoadedBase;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
@@ -11,8 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityConverterHeRf extends TileEntityLoadedBase implements IEnergyReceiverMK2, IEnergyHandler {
-	
+public class TileEntityConverterHeRf extends TileEntityLoadedBase implements api.hbm.energymk2.IEnergyReceiver, IEnergyHandler {
+
 	//Thanks to the great people of Fusion Warfare for helping me with the original implementation of the RF energy API
 	
 	public long power;

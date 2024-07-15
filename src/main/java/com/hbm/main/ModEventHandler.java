@@ -75,7 +75,7 @@ import com.hbm.util.ShadyUtil;
 import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.world.generator.TimedGenerator;
 
-import api.hbm.energymk2.Nodespace;
+import api.hbm.nodespace.Nodespace;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;

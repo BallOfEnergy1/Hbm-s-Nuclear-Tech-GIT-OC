@@ -1,14 +1,14 @@
 package com.hbm.tileentity.network;
 
+import api.hbm.energymk2.IEnergyProvider;
 import com.hbm.tileentity.TileEntityLoadedBase;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityConverterRfHe extends TileEntityLoadedBase implements IEnergyProviderMK2, IEnergyHandler {
+public class TileEntityConverterRfHe extends TileEntityLoadedBase implements IEnergyProvider, IEnergyHandler {
 
 	public long power;
 	public final long maxPower = 5_000_000;

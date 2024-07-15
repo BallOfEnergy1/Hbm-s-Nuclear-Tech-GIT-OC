@@ -14,7 +14,7 @@ import com.hbm.tileentity.network.TileEntityCableBaseNT;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 
-import api.hbm.energymk2.PowerNetMK2;
+import api.hbm.nodespace.Net;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -119,9 +119,9 @@ public class BlockCableGauge extends BlockContainer implements IBlockMultiPass, 
 				
 				if(this.node != null && this.node.net != null) {
 					
-					PowerNetMK2 net = this.node.net;
+					Net net = this.node.net;
 					
-					this.deltaTick = net.energyTracker;
+					this.deltaTick = net.tracker;
 					if(worldObj.getTotalWorldTime() % 20 == 0) {
 						this.deltaLastSecond = this.deltaSecond;
 						this.deltaSecond = 0;

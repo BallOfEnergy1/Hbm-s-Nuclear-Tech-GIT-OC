@@ -26,7 +26,7 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
@@ -46,7 +46,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineOreSlopper extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiver, IGUIProvider, IUpgradeInfoProvider {
+public class TileEntityMachineOreSlopper extends TileEntityMachineBase implements IEnergyReceiver, IFluidStandardTransceiver, IGUIProvider, IUpgradeInfoProvider {
 	
 	public long power;
 	public static final long maxPower = 100_000;

@@ -2,6 +2,7 @@ package com.hbm.render.tileentity;
 
 import org.lwjgl.opengl.GL11;
 
+import api.hbm.nodespace.Net.NetType;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.lib.Library;
 import com.hbm.main.ResourceManager;
@@ -37,7 +38,7 @@ public abstract class RenderTurretBase extends TileEntitySpecialRenderer {
 	
 	private void checkPlug(World world, int x, int y, int z, boolean power, boolean fluid, FluidType type, int ox, int oz, int rot, ForgeDirection dir) {
 		
-		if((power && Library.canConnect(world, x, y, z, dir)) || (fluid && Library.checkFluidConnectables(world, x, y, z, type)) || (fluid && Library.canConnectFluid(world, x, y, z, dir, type))) {
+		if((power && Library.canConnect(world, x, y, z, dir, NetType.ENERGY)) || (fluid && Library.checkFluidConnectables(world, x, y, z, type)) || (fluid && Library.canConnectFluid(world, x, y, z, dir, type))) {
 			
 			GL11.glPushMatrix();
 			GL11.glRotated(rot, 0, 1, 0);

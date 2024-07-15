@@ -1,11 +1,11 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyReceiver;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityCondenserPowered extends TileEntityCondenser implements IEnergyReceiverMK2 {
+public class TileEntityCondenserPowered extends TileEntityCondenser implements IEnergyReceiver {
 	
 	public long power;
 	public static final long maxPower = 10_000_000;

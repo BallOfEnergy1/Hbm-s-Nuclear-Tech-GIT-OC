@@ -3,6 +3,7 @@ package com.hbm.tileentity.machine;
 import java.util.ArrayList;
 import java.util.List;
 
+import api.hbm.nodespace.Net;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.MachineITER;
 import com.hbm.explosion.ExplosionLarge;
@@ -31,7 +32,7 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.CompatEnergyControl;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.common.Optional;
@@ -53,7 +54,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityITER extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidAcceptor, IFluidSource, IFluidStandardTransceiver, IGUIProvider, IInfoProviderEC, SimpleComponent, CompatHandler.OCComponent {
+public class TileEntityITER extends TileEntityMachineBase implements IEnergyReceiver, IFluidAcceptor, IFluidSource, IFluidStandardTransceiver, IGUIProvider, IInfoProviderEC, SimpleComponent, CompatHandler.OCComponent {
 	
 	public long power;
 	public static final long maxPower = 10000000;
@@ -639,7 +640,7 @@ public class TileEntityITER extends TileEntityMachineBase implements IEnergyRece
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir == ForgeDirection.UP || dir == ForgeDirection.DOWN;
 	}
 

@@ -2,6 +2,8 @@ package com.hbm.tileentity.bomb;
 
 import java.util.List;
 
+import api.hbm.energymk2.IEnergyReceiver;
+import api.hbm.nodespace.Net;
 import com.hbm.entity.missile.EntityMissileCustom;
 import com.hbm.handler.CompatHandler;
 import com.hbm.handler.MissileStruct;
@@ -27,7 +29,6 @@ import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.IRadarCommandReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import api.hbm.item.IDesignatorItem;
 import cpw.mods.fml.common.Optional;
@@ -54,7 +55,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityLaunchTable extends TileEntityLoadedBase implements ISidedInventory, IEnergyReceiverMK2, IFluidContainer, IFluidAcceptor, IFluidStandardReceiver, IGUIProvider, SimpleComponent, IRadarCommandReceiver, CompatHandler.OCComponent {
+public class TileEntityLaunchTable extends TileEntityLoadedBase implements ISidedInventory, IEnergyReceiver, IFluidContainer, IFluidAcceptor, IFluidStandardReceiver, IGUIProvider, SimpleComponent, IRadarCommandReceiver, CompatHandler.OCComponent {
 
 	private ItemStack slots[];
 
@@ -628,7 +629,7 @@ public class TileEntityLaunchTable extends TileEntityLoadedBase implements ISide
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection dir) {
+	public boolean canConnect(ForgeDirection dir, Net.NetType type) {
 		return dir != ForgeDirection.UP && dir != ForgeDirection.DOWN && dir != ForgeDirection.UNKNOWN;
 	}
 

@@ -18,7 +18,7 @@ import com.hbm.util.BobMathUtil;
 import com.hbm.util.CompatEnergyControl;
 import com.hbm.util.I18nUtil;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IEnergyReceiver;
 import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,7 +34,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineCentrifuge extends TileEntityMachineBase implements IEnergyReceiverMK2, IGUIProvider, IUpgradeInfoProvider, IInfoProviderEC {
+public class TileEntityMachineCentrifuge extends TileEntityMachineBase implements IEnergyReceiver, IGUIProvider, IUpgradeInfoProvider, IInfoProviderEC {
 	
 	public int progress;
 	public long power;
