@@ -16,6 +16,7 @@ import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.InventoryUtil;
 import com.hbm.util.ItemStackUtil;
+import com.hbm.util.Tuple;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
@@ -129,16 +130,22 @@ public abstract class TileEntityMachineChemplantBase extends TileEntityMachineBa
 		return true;
 	}
 
-	public HashMap<ItemStack[], Boolean> cachedItems = new HashMap<>();
+	public List<Tuple.Pair<ItemStack[], Boolean>> cachedItems = new ArrayList<>(8);
 
 	private boolean hasRequiredItems(ChemRecipe recipe, int index) {
 		int[] indices = getSlotIndicesFromIndex(index);
 		ItemStack[] copy = ItemStackUtil.carefulCopyArrayTruncate(slots, indices[0], indices[1]);
-		if (cachedItems.get(copy) != null)
-			return cachedItems.get(copy);
+
+		if (cachedItems.isEmpty()) // if the array hasn't been initialized
+			for (int i = 0; i < this.getRecipeCount(); i++)
+				cachedItems.add(i, new Tuple.Pair<>(copy, false));
+
+		if (cachedItems.get(index).getKey() == copy)
+			return cachedItems.get(index).getValue();
 		else {
 			boolean hasItems = InventoryUtil.doesArrayHaveIngredients(slots, indices[0], indices[1], recipe.inputs);
-			cachedItems.put(copy, hasItems);
+			cachedItems.remove(index);
+			cachedItems.add(index, new Tuple.Pair<>(copy, hasItems));
 			return hasItems;
 		}
 	}

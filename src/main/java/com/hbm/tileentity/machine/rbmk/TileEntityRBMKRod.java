@@ -202,7 +202,7 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 			new RBMKNeutronHandler.RBMKNeutronStream(node, neutronVector, flux, ratio);
 		}
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
@@ -241,7 +241,7 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 	@Override
 	public void serialize(ByteBuf buf) {
 		super.serialize(buf);
-		buf.writeDouble(this.fluxQuantity);
+		buf.writeDouble(this.lastFluxQuantity);
 		buf.writeDouble(this.fluxRatio);
 		buf.writeBoolean(this.hasRod);
 	}
