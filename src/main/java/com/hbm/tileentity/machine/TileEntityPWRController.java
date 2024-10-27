@@ -149,6 +149,7 @@ public class TileEntityPWRController extends TileEntityMachineBase implements IG
 
 		connections = connectionsDouble / 2;
 		connectionsControlled = connectionsControlledDouble / 2;
+		heatsinkCount = Math.min(heatsinkCount, 80);
 
 		//switching this to int64 because after 2127 heatsinks the capacity exceeds the int32 which is well within the 4000+ threshold we are working with. oops!
 		this.coreHeatCapacity = this.coreHeatCapacityBase + this.heatsinkCount * (this.coreHeatCapacityBase / 20);
@@ -272,7 +273,21 @@ public class TileEntityPWRController extends TileEntityMachineBase implements IG
 				}
 			}
 
-			this.networkPackNT(150);
+			NBTTagCompound data = new NBTTagCompound();
+			tanks[0].writeToNBT(data, "t0");
+			tanks[1].writeToNBT(data, "t1");
+			data.setInteger("rodCount", rodCount);
+			data.setLong("coreHeat", coreHeat);
+			data.setLong("hullHeat", hullHeat);
+			data.setDouble("flux", flux);
+			data.setDouble("processTime", processTime);
+			data.setDouble("progress", progress);
+			data.setInteger("typeLoaded", typeLoaded);
+			data.setInteger("amountLoaded", amountLoaded);
+			data.setDouble("rodLevel", rodLevel);
+			data.setDouble("rodTarget", rodTarget);
+			data.setLong("coreHeatCapacity", coreHeatCapacity);
+			this.networkPack(data, 150);
 		} else {
 
 			if(amountLoaded > 0) {
@@ -372,40 +387,22 @@ public class TileEntityPWRController extends TileEntityMachineBase implements IG
 		return this.rodCount + (int) Math.ceil(this.heatsinkCount / 4D);
 	}
 
-	@Override
-	public void serialize(ByteBuf buf) {
-		super.serialize(buf);
-		buf.writeInt(this.rodCount);
-		buf.writeLong(this.coreHeat);
-		buf.writeLong(this.hullHeat);
-		buf.writeDouble(this.flux);
-		buf.writeDouble(this.processTime);
-		buf.writeDouble(this.progress);
-		buf.writeInt(this.typeLoaded);
-		buf.writeInt(this.amountLoaded);
-		buf.writeDouble(this.rodLevel);
-		buf.writeDouble(this.rodTarget);
-		buf.writeLong(this.coreHeatCapacity);
-		tanks[0].serialize(buf);
-		tanks[1].serialize(buf);
-	}
+	public void networkUnpack(NBTTagCompound nbt) {
+		super.networkUnpack(nbt);
 
-	@Override
-	public void deserialize(ByteBuf buf) {
-		super.deserialize(buf);
-		this.rodCount = buf.readInt();
-		this.coreHeat = buf.readLong();
-		this.hullHeat = buf.readLong();
-		this.flux = buf.readDouble();
-		this.processTime = buf.readDouble();
-		this.progress = buf.readDouble();
-		this.typeLoaded = buf.readInt();
-		this.amountLoaded = buf.readInt();
-		this.rodLevel = buf.readDouble();
-		this.rodTarget = buf.readDouble();
-		this.coreHeatCapacity = buf.readLong();
-		tanks[0].deserialize(buf);
-		tanks[1].deserialize(buf);
+		tanks[0].readFromNBT(nbt, "t0");
+		tanks[1].readFromNBT(nbt, "t1");
+		rodCount = nbt.getInteger("rodCount");
+		coreHeat = nbt.getLong("coreHeat");
+		hullHeat = nbt.getLong("hullHeat");
+		flux = nbt.getDouble("flux");
+		processTime = nbt.getDouble("processTime");
+		progress = nbt.getDouble("progress");
+		typeLoaded = nbt.getInteger("typeLoaded");
+		amountLoaded = nbt.getInteger("amountLoaded");
+		rodLevel = nbt.getDouble("rodLevel");
+		rodTarget = nbt.getInteger("rodTarget");
+		coreHeatCapacity = nbt.getLong("coreHeatCapacity");
 	}
 
 	protected void setupTanks() {
