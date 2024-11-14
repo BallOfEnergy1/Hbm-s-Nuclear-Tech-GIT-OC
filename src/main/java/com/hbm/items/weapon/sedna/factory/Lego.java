@@ -6,10 +6,12 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import com.hbm.entity.projectile.EntityBulletBaseMK4;
+import com.hbm.entity.projectile.EntityBulletBeamBase;
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.standard.EntityProcessorCrossSmooth;
 import com.hbm.explosion.vanillant.standard.ExplosionEffectWeapon;
 import com.hbm.explosion.vanillant.standard.PlayerProcessorStandard;
+import com.hbm.interfaces.NotableComments;
 import com.hbm.items.weapon.sedna.BulletConfig;
 import com.hbm.items.weapon.sedna.GunConfig;
 import com.hbm.items.weapon.sedna.ItemGunBaseNT;
@@ -18,6 +20,7 @@ import com.hbm.items.weapon.sedna.ItemGunBaseNT.LambdaContext;
 import com.hbm.items.weapon.sedna.ItemGunBaseNT.SmokeNode;
 import com.hbm.items.weapon.sedna.Receiver;
 import com.hbm.items.weapon.sedna.mags.IMagazine;
+import com.hbm.particle.helper.BlackPowderHelper;
 import com.hbm.render.anim.BusAnimation;
 import com.hbm.render.anim.BusAnimationSequence;
 import com.hbm.render.anim.HbmAnimations.AnimType;
@@ -31,8 +34,11 @@ import net.minecraft.util.Vec3;
 /**
  * "LEGO" - i.e. standardized building blocks which can be used to set up gun configs easily.
  * 
+ * small update, 24/11/03: this turned into fucking spaghetti. fuuuuuuuck.
+ * 
  * @author hbm
  */
+@NotableComments
 public class Lego {
 	
 	public static final Random ANIM_RAND = new Random();
@@ -63,11 +69,13 @@ public class Lego {
 	};
 	
 	/** If IDLE and ammo is loaded, fire and set to JUST_FIRED. */
-	public static BiConsumer<ItemStack, LambdaContext> LAMBDA_STANDARD_CLICK_PRIMARY = (stack, ctx) -> {
+	public static BiConsumer<ItemStack, LambdaContext> LAMBDA_STANDARD_CLICK_PRIMARY = (stack, ctx) -> { clickReceiver(stack, ctx, 0); };
+	
+	public static void clickReceiver(ItemStack stack, LambdaContext ctx, int receiver) {
 
 		EntityLivingBase entity = ctx.entity;
 		EntityPlayer player = ctx.getPlayer();
-		Receiver rec = ctx.config.getReceivers(stack)[0];
+		Receiver rec = ctx.config.getReceivers(stack)[receiver];
 		int index = ctx.configIndex;
 		GunState state = ItemGunBaseNT.getState(stack, index);
 		
@@ -88,12 +96,12 @@ public class Lego {
 				
 				if(rec.getDoesDryFire(stack)) {
 					ItemGunBaseNT.playAnimation(player, stack, AnimType.CYCLE_DRY, index);
-					ItemGunBaseNT.setState(stack, index, rec.getDoesDryFireAfterAuto(stack) ? GunState.COOLDOWN : GunState.DRAWING);
+					ItemGunBaseNT.setState(stack, index, rec.getRefireAfterDry(stack) ? GunState.COOLDOWN : GunState.DRAWING);
 					ItemGunBaseNT.setTimer(stack, index, rec.getDelayAfterDryFire(stack));
 				}
 			}
 		}
-	};
+	}
 	
 	/** If IDLE, switch mode between 0 and 1. */
 	public static BiConsumer<ItemStack, LambdaContext> LAMBDA_STANDARD_CLICK_SECONDARY = (stack, ctx) -> {
@@ -182,8 +190,48 @@ public class Lego {
 		doStandardFire(stack, ctx, AnimType.CYCLE, true);
 		ItemGunBaseNT.setIsLockedOn(stack, false);
 	};
+	public static BiConsumer<ItemStack, LambdaContext> LAMBDA_BEAM_FIRE = (stack, ctx) -> {
+		doBeamFire(stack, ctx, AnimType.CYCLE, true);
+	};
 	
 	public static void doStandardFire(ItemStack stack, LambdaContext ctx, AnimType anim, boolean calcWear) {
+		EntityLivingBase entity = ctx.entity;
+		EntityPlayer player = ctx.getPlayer();
+		int index = ctx.configIndex;
+		if(anim != null) ItemGunBaseNT.playAnimation(player, stack, anim, ctx.configIndex);
+		
+		float aim = ItemGunBaseNT.getIsAiming(stack) ? 0.25F : 1F;
+		Receiver primary = ctx.config.getReceivers(stack)[0];
+		IMagazine mag = primary.getMagazine(stack);
+		BulletConfig config = (BulletConfig) mag.getType(stack, ctx.inventory);
+		
+		Vec3 offset = primary.getProjectileOffset(stack);
+		double forwardOffset = offset.xCoord;
+		double heightOffset = offset.yCoord;
+		double sideOffset = ItemGunBaseNT.getIsAiming(stack) ? 0 : offset.zCoord; //TODO: make this configurable
+		
+		/*forwardOffset = 0.75;
+		heightOffset = -0.125;
+		sideOffset = -0.25D;*/
+		
+		int projectiles = config.projectilesMin;
+		if(config.projectilesMax > config.projectilesMin) projectiles += entity.getRNG().nextInt(config.projectilesMax - config.projectilesMin + 1);
+		
+		for(int i = 0; i < projectiles; i++) {
+			float damage = calcDamage(ctx, stack, primary, calcWear, index);
+			float spread = calcSpread(ctx, stack, primary, calcWear, index, aim);
+			EntityBulletBaseMK4 mk4 = new EntityBulletBaseMK4(entity, config, damage, spread, sideOffset, heightOffset, forwardOffset);
+			if(ItemGunBaseNT.getIsLockedOn(stack)) mk4.lockonTarget = entity.worldObj.getEntityByID(ItemGunBaseNT.getLockonTarget(stack));
+			if(i == 0 && config.blackPowder) BlackPowderHelper.composeEffect(entity.worldObj, mk4.posX, mk4.posY, mk4.posZ, mk4.motionX, mk4.motionY, mk4.motionZ, 10, 0.25F, 0.5F, 10, 0.25F);
+			entity.worldObj.spawnEntityInWorld(mk4);
+		}
+		
+		mag.useUpAmmo(stack, ctx.inventory, 1);
+		if(calcWear) ItemGunBaseNT.setWear(stack, index, Math.min(ItemGunBaseNT.getWear(stack, index) + config.wear, ctx.config.getDurability(stack)));
+	}
+	
+	//shittily copy pasted because god damn this sucks ass why do projectiles need this much fucking setup jesus christ have mercy
+	public static void doBeamFire(ItemStack stack, LambdaContext ctx, AnimType anim, boolean calcWear) {
 		EntityLivingBase entity = ctx.entity;
 		EntityPlayer player = ctx.getPlayer();
 		int index = ctx.configIndex;
@@ -200,17 +248,16 @@ public class Lego {
 		double sideOffset = ItemGunBaseNT.getIsAiming(stack) ? 0 : offset.zCoord;
 		
 		/*forwardOffset = 0.75;
-		heightOffset = -0.125;
-		sideOffset = -0.25D;*/
+		heightOffset = -0.0625 * 1.5;
+		sideOffset = -0.1875D;*/
 		
 		int projectiles = config.projectilesMin;
 		if(config.projectilesMax > config.projectilesMin) projectiles += entity.getRNG().nextInt(config.projectilesMax - config.projectilesMin + 1);
 		
 		for(int i = 0; i < projectiles; i++) {
-			float damage = primary.getBaseDamage(stack) * (calcWear ? getStandardWearDamage(stack, ctx.config, index) : 1);
-			float spread = primary.getGunSpread(stack) * aim + (calcWear ? getStandardWearSpread(stack, ctx.config, index) * 0.125F : 0F);
-			EntityBulletBaseMK4 mk4 = new EntityBulletBaseMK4(entity, config, damage, spread, sideOffset, heightOffset, forwardOffset);
-			if(ItemGunBaseNT.getIsLockedOn(stack)) mk4.lockonTarget = entity.worldObj.getEntityByID(ItemGunBaseNT.getLockonTarget(stack));
+			float damage = calcDamage(ctx, stack, primary, calcWear, index);
+			float spread = calcSpread(ctx, stack, primary, calcWear, index, aim);
+			EntityBulletBeamBase mk4 = new EntityBulletBeamBase(entity, config, damage, spread, sideOffset, heightOffset, forwardOffset);
 			entity.worldObj.spawnEntityInWorld(mk4);
 		}
 		
@@ -224,10 +271,26 @@ public class Lego {
 		return (percent - 0.5F) * 2F;
 	}
 	
+	/** Returns the standard multiplier for damage based on wear */
 	public static float getStandardWearDamage(ItemStack stack, GunConfig config, int index) {
 		float percent = (float) ItemGunBaseNT.getWear(stack, index) / config.getDurability(stack);
 		if(percent < 0.75F) return 1F;
 		return 1F - (percent - 0.75F) * 2F;
+	}
+
+	/** Returns the full calculated damage based on guncfg and wear */
+	public static float calcDamage(LambdaContext ctx, ItemStack stack, Receiver primary, boolean calcWear, int index) {
+		return primary.getBaseDamage(stack) * (calcWear ? getStandardWearDamage(stack, ctx.config, index) : 1);
+	}
+	
+	public static float calcSpread(LambdaContext ctx, ItemStack stack, Receiver primary, boolean calcWear, int index, float aim) {
+		return primary.getGunSpread(stack) * aim + (calcWear ? getStandardWearSpread(stack, ctx.config, index) * 0.125F : 0F); //TODO: redo all this spread shit
+		/*
+		 * spread should have multiple additive parts:
+		 *  - hipfire penalty (mitigated by aiming)
+		 *  - innate gun inaccuracy (usually 0, increases with wear)
+		 *  - bullet inaccuray (usually 0, higher with buckshot)
+		 */
 	}
 	
 	public static void standardExplode(EntityBulletBaseMK4 bullet, MovingObjectPosition mop, float range) { standardExplode(bullet, mop, range, 1F); }

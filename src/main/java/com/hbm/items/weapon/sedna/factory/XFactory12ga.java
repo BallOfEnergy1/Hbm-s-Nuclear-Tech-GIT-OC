@@ -42,6 +42,7 @@ public class XFactory12ga {
 	public static BulletConfig g12_explosive;
 	public static BulletConfig g12_phosphorus;
 	public static BulletConfig g12_anthrax;
+	public static BulletConfig g12_equestrian;
 	
 	public static BiConsumer<EntityBulletBaseMK4, MovingObjectPosition> LAMBDA_STANDARD_EXPLODE = (bullet, mop) -> {
 		Lego.standardExplode(bullet, mop, 2F); bullet.setDead();
@@ -49,9 +50,9 @@ public class XFactory12ga {
 	
 	public static void init() {
 		
-		g12_bp = new BulletConfig().setItem(EnumAmmo.G12_BP).setProjectiles(8).setSpread(0.05F).setRicochetAngle(15).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(SpentCasing.COLOR_CASE_BRASS, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_BP"));
-		g12_bp_magnum = new BulletConfig().setItem(EnumAmmo.G12_BP_MAGNUM).setProjectiles(4).setSpread(0.05F).setRicochetAngle(25).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(SpentCasing.COLOR_CASE_BRASS, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_BP_MAGNUM"));
-		g12_bp_slug = new BulletConfig().setItem(EnumAmmo.G12_BP_SLUG).setSpread(0.01F).setRicochetAngle(5).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(SpentCasing.COLOR_CASE_BRASS, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_BP_SLUG"));
+		g12_bp = new BulletConfig().setItem(EnumAmmo.G12_BP).setBlackPowder(true).setProjectiles(8).setSpread(0.05F).setRicochetAngle(15).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(SpentCasing.COLOR_CASE_BRASS, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_BP"));
+		g12_bp_magnum = new BulletConfig().setItem(EnumAmmo.G12_BP_MAGNUM).setBlackPowder(true).setProjectiles(4).setSpread(0.05F).setRicochetAngle(25).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(SpentCasing.COLOR_CASE_BRASS, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_BP_MAGNUM"));
+		g12_bp_slug = new BulletConfig().setItem(EnumAmmo.G12_BP_SLUG).setBlackPowder(true).setSpread(0.01F).setRicochetAngle(5).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(SpentCasing.COLOR_CASE_BRASS, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_BP_SLUG"));
 		g12 = new BulletConfig().setItem(EnumAmmo.G12).setProjectiles(8).setSpread(0.05F).setRicochetAngle(15).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(0xB52B2B, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA"));
 		g12_slug = new BulletConfig().setItem(EnumAmmo.G12_SLUG).setSpread(0.0F).setRicochetAngle(25).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(0x393939, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_SLUG"));
 		g12_flechette = new BulletConfig().setItem(EnumAmmo.G12_FLECHETTE).setProjectiles(8).setSpread(0.025F).setRicochetAngle(5).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(0x3C80F0, SpentCasing.COLOR_CASE_BRASS).setScale(0.75F).register("12GA_FLECHETTE"));
@@ -59,6 +60,7 @@ public class XFactory12ga {
 		g12_explosive = new BulletConfig().setItem(EnumAmmo.G12_EXPLOSIVE).setOnImpact(LAMBDA_STANDARD_EXPLODE).setSpread(0F).setRicochetAngle(15).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(0xDA4127, SpentCasing.COLOR_CASE_12GA).setScale(0.75F).register("12GA_EXPLOSIVE"));
 		g12_phosphorus = new BulletConfig().setItem(EnumAmmo.G12_PHOSPHORUS).setProjectiles(8).setSpread(0.015F).setRicochetAngle(15).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(0x910001, SpentCasing.COLOR_CASE_12GA).setScale(0.75F).register("12GA_PHOSPHORUS"));
 		g12_anthrax = new BulletConfig().setItem(EnumAmmo.G12_ANTHRAX).setProjectiles(8).setSpread(0.015F).setRicochetAngle(15).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(0x749300, SpentCasing.COLOR_CASE_12GA).setScale(0.75F).register("12GA_ANTHRAX"));
+		g12_equestrian = new BulletConfig().setItem(EnumAmmo.G12_EQUESTRIAN).setDamage(0F).setCasing(new SpentCasing(CasingType.SHOTGUN).setColor(SpentCasing.COLOR_CASE_EQUESTRIAN, SpentCasing.COLOR_CASE_12GA).setScale(0.75F).register("12gaEquestrian"));
 
 		BulletConfig[] all = new BulletConfig[] {g12_bp, g12_bp_magnum, g12_bp_slug, g12, g12_slug, g12_flechette, g12_magnum, g12_explosive, g12_phosphorus, g12_anthrax};
 		
@@ -117,14 +119,14 @@ public class XFactory12ga {
 		ModItems.gun_spas12 = new ItemGunBaseNT(WeaponQuality.A_SIDE, new GunConfig()
 				.dura(600).draw(20).inspect(39).reloadSequential(true).crosshair(Crosshair.L_CIRCLE).smoke(Lego.LAMBDA_STANDARD_SMOKE)
 				.rec(new Receiver(0)
-						.dmg(12F).delay(20).reload(5, 10, 10, 10, 0).jam(24).sound("hbm:weapon.shotgunShoot", 1.0F, 1.0F)
+						.dmg(12F).delay(20).reload(5, 10, 10, 10, 0).jam(36).sound("hbm:weapon.shotgunShoot", 1.0F, 1.0F)
 						.mag(new MagazineSingleReload(0, 8).addConfigs(all))
 						.offset(0.75, -0.0625, -0.1875)
 						.setupStandardFire().recoil(Lego.LAMBDA_STANDARD_RECOIL))
 				.setupStandardConfiguration().ps(LAMBDA_SPAS_SECONDARY).pt(null)
 				.anim(LAMBDA_SPAS_ANIMS).orchestra(Orchestras.ORCHESTRA_SPAS)
 				).setUnlocalizedName("gun_spas12");
-		
+
 		ModItems.gun_autoshotgun = new ItemGunBaseNT(WeaponQuality.A_SIDE, new GunConfig()
 				.dura(2_000).draw(10).inspect(33).reloadSequential(true).crosshair(Crosshair.L_CIRCLE).smoke(Lego.LAMBDA_STANDARD_SMOKE)
 				.rec(new Receiver(0)
@@ -135,6 +137,16 @@ public class XFactory12ga {
 				.setupStandardConfiguration()
 				.anim(LAMBDA_SHREDDER_ANIMS).orchestra(Orchestras.ORCHESTRA_SHREDDER)
 				).setUnlocalizedName("gun_autoshotgun");
+		ModItems.gun_autoshotgun_sexy = new ItemGunBaseNT(WeaponQuality.LEGENDARY, new GunConfig()
+				.dura(5_000).draw(10).inspect(33).reloadSequential(true).crosshair(Crosshair.L_CIRCLE).smoke(Lego.LAMBDA_STANDARD_SMOKE)
+				.rec(new Receiver(0)
+						.dmg(15F).delay(1).auto(true).dryfireAfterAuto(true).reload(44).jam(19).sound("hbm:weapon.fire.blackPowder", 1.0F, 1.0F)
+						.mag(new MagazineFullReload(0, 100).addConfigs(g12_equestrian, g12_bp, g12_bp_magnum, g12_bp_slug, g12, g12_slug, g12_flechette, g12_magnum, g12_explosive, g12_phosphorus, g12_anthrax))
+						.offset(0.75, -0.125, -0.25)
+						.setupStandardFire().recoil(Lego.LAMBDA_STANDARD_RECOIL))
+				.setupStandardConfiguration()
+				.anim(LAMBDA_SEXY_ANIMS).orchestra(Orchestras.ORCHESTRA_SHREDDER_SEXY)
+				).setUnlocalizedName("gun_autoshotgun_sexy");
 	}
 	//TODO: make generic code for this crap
 	public static BiConsumer<ItemStack, LambdaContext> LAMBDA_SPAS_SECONDARY = (stack, ctx) -> {
@@ -336,14 +348,15 @@ public class XFactory12ga {
 		case EQUIP: return new BusAnimation()
 				.addBus("EQUIP", new BusAnimationSequence().addPos(-60, 0, 0, 0).addPos(0, 0, -3, 500, IType.SIN_DOWN));
 		case CYCLE: return ResourceManager.spas_12_anim.get("Fire");
-		case CYCLE_DRY: return new BusAnimation();
+		case CYCLE_DRY: return ResourceManager.spas_12_anim.get("FireDry");
+		case ALT_CYCLE: return ResourceManager.spas_12_anim.get("FireAlt");
 		case RELOAD:
 			boolean empty = ((ItemGunBaseNT) stack.getItem()).getConfig(stack, 0).getReceivers(stack)[0].getMagazine(stack).getAmount(stack, MainRegistry.proxy.me().inventory) <= 0;
 			return ResourceManager.spas_12_anim.get(empty ? "ReloadEmptyStart" : "ReloadStart");
 		case RELOAD_CYCLE: return ResourceManager.spas_12_anim.get("Reload");
 		case RELOAD_END: return ResourceManager.spas_12_anim.get("ReloadEnd");
-		case JAMMED: return new BusAnimation();
-		case INSPECT: return new BusAnimation();
+		case JAMMED: return ResourceManager.spas_12_anim.get("Jammed");
+		case INSPECT: return ResourceManager.spas_12_anim.get("Inspect");
 		}
 		
 		return null;
@@ -373,5 +386,17 @@ public class XFactory12ga {
 		}
 		
 		return null;
+	};
+
+	@SuppressWarnings("incomplete-switch") public static BiFunction<ItemStack, AnimType, BusAnimation> LAMBDA_SEXY_ANIMS = (stack, type) -> {
+		switch(type) {
+		case CYCLE: return new BusAnimation()
+				.addBus("RECOIL", new BusAnimationSequence().addPos(0, 0, -1, 50, IType.SIN_DOWN).addPos(0, 0, 0, 150, IType.SIN_FULL))
+				.addBus("CYCLE", new BusAnimationSequence().addPos(0, 0, 18, 50));
+		case CYCLE_DRY: return new BusAnimation()
+				.addBus("CYCLE", new BusAnimationSequence().addPos(0, 0, 18, 50));
+		}
+		
+		return LAMBDA_SHREDDER_ANIMS.apply(stack, type);
 	};
 }

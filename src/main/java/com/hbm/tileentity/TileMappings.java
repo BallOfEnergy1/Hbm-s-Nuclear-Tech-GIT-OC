@@ -11,7 +11,6 @@ import com.hbm.blocks.generic.BlockDynamicSlag.TileEntitySlag;
 import com.hbm.blocks.generic.BlockEmitter.TileEntityEmitter;
 import com.hbm.blocks.generic.BlockGlyphidSpawner.TileEntityGlpyhidSpawner;
 import com.hbm.blocks.generic.BlockLoot.TileEntityLoot;
-import com.hbm.blocks.generic.BlockMotherOfAllOres.TileEntityRandomOre;
 import com.hbm.blocks.generic.BlockPedestal.TileEntityPedestal;
 import com.hbm.blocks.generic.BlockPlushie.TileEntityPlushie;
 import com.hbm.blocks.generic.BlockSnowglobe.TileEntitySnowglobe;
@@ -102,6 +101,7 @@ public class TileMappings {
 		put(TileEntityCrateDesh.class, "tileentity_crate_desh");
 		put(TileEntityMassStorage.class, "tileentity_mass_storage");
 		put(TileEntityMachinePress.class, "tileentity_press");
+		put(TileEntityMachineAmmoPress.class, "tileentity_ammo_press");
 		put(TileEntityMachineSiren.class, "tileentity_siren");
 		put(TileEntityMachineSPP.class, "tileentity_spp");
 		put(TileEntityMachineRadGen.class, "tileentity_radgen");
@@ -216,7 +216,6 @@ public class TileMappings {
 		put(TileEntityProxyCombo.class, "tileentity_proxy_combo");
 		put(TileEntityProxyConductor.class, "tileentity_proxy_conductor");
 
-		put(TileEntityRandomOre.class, "tileentity_mother_of_all_ores");
 		put(TileEntityBedrockOre.class, "tileentity_bedrock_ore");
 
 		put(TileEntityBlockPWR.class, "tileentity_block_pwr");

@@ -86,9 +86,7 @@ public class EntityMappings {
 		addEntity(EntityGrenadeASchrab.class, "entity_grenade_aschrab", 500);
 		addEntity(EntityFalloutRain.class, "entity_fallout", 1000);
 		addEntity(EntityEMPBlast.class, "entity_emp_blast", 1000);
-		addEntity(EntityPlasmaBeam.class, "entity_immolator_beam", 1000);
 		addEntity(EntityLN2.class, "entity_LN2", 1000);
-		addEntity(EntityNightmareBlast.class, "entity_ominous_bullet", 1000);
 		addEntity(EntityGrenadePulse.class, "entity_grenade_pulse", 1000);
 		addEntity(EntityLaserBeam.class, "entity_laser_beam", 1000);
 		addEntity(EntityMinerBeam.class, "entity_miner_beam", 1000);
@@ -150,6 +148,7 @@ public class EntityMappings {
 		addEntity(EntityFallingNuke.class, "entity_falling_bomb", 1000);
 		addEntity(EntityBulletBaseNT.class, "entity_bullet_mk3", 250, false);
 		addEntity(EntityBulletBaseMK4.class, "entity_bullet_mk4", 250, false);
+		addEntity(EntityBulletBeamBase.class, "entity_beam_mk4", 250, false);
 		addEntity(EntityMinerRocket.class, "entity_miner_lander", 1000);
 		addEntity(EntityFogFX.class, "entity_nuclear_fog", 1000);
 		addEntity(EntityDuchessGambit.class, "entity_duchessgambit", 1000);
@@ -203,6 +202,7 @@ public class EntityMappings {
 		addEntity(EntitySawblade.class, "entity_stray_saw", 1000);
 		addEntity(EntityChemical.class, "entity_chemthrower_splash", 1000);
 		addEntity(EntityMist.class, "entity_mist", 250, false);
+		addEntity(EntityFireLingering.class, "entity_fire_lingering", 250, false);
 		addEntity(EntityAcidBomb.class, "entity_acid_bomb", 1000);
 		addEntity(EntityFallingBlockNT.class, "entity_falling_block_nt", 1000);
 		addEntity(EntityBoatRubber.class, "entity_rubber_boat", 250, false);

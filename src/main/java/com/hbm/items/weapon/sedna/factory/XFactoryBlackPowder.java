@@ -20,18 +20,19 @@ import net.minecraft.item.ItemStack;
 
 public class XFactoryBlackPowder {
 
-	public static void init() {
+	public static BulletConfig stone = new BulletConfig().setItem(EnumAmmo.STONE).setBlackPowder(true).setSpread(0.025F).setRicochetAngle(15);
+	public static BulletConfig flint = new BulletConfig().setItem(EnumAmmo.STONE_AP).setBlackPowder(true).setSpread(0.01F).setRicochetAngle(5).setDoesPenetrate(true).setDamage(1.75F);
+	public static BulletConfig iron = new BulletConfig().setItem(EnumAmmo.STONE_IRON).setBlackPowder(true).setSpread(0F).setRicochetAngle(90).setRicochetCount(5).setDoesPenetrate(true).setDamageFalloutByPen(false).setDamage(2F);
+	public static BulletConfig shot = new BulletConfig().setItem(EnumAmmo.STONE_SHOT).setBlackPowder(true).setSpread(0.1F).setRicochetAngle(45).setProjectiles(6, 6).setDamage(0.5F);
 
-		BulletConfig stone = new BulletConfig().setItem(EnumAmmo.STONE).setSpread(0.025F).setRicochetAngle(15);
-		BulletConfig flint = new BulletConfig().setItem(EnumAmmo.STONE_AP).setSpread(0.01F).setRicochetAngle(5).setDoesPenetrate(true).setDamage(1.75F);
-		BulletConfig iron = new BulletConfig().setItem(EnumAmmo.STONE_IRON).setSpread(0F).setRicochetAngle(90).setRicochetCount(5).setDoesPenetrate(true).setDamageFalloutByPen(false).setDamage(2F);
-		BulletConfig shot = new BulletConfig().setItem(EnumAmmo.STONE_SHOT).setSpread(0.1F).setRicochetAngle(45).setProjectiles(6, 6).setDamage(0.5F);
+	public static void init() {
 		
 		ModItems.gun_pepperbox = new ItemGunBaseNT(WeaponQuality.A_SIDE, new GunConfig()
 				.dura(300).draw(4).inspect(23).crosshair(Crosshair.CIRCLE).smoke(Lego.LAMBDA_STANDARD_SMOKE)
 				.rec(new Receiver(0)
 						.dmg(5F).delay(27).reload(67).jam(58).sound("hbm:weapon.fire.blackPowder", 1.0F, 1.0F)
 						.mag(new MagazineFullReload(0, 6).addConfigs(stone, flint, iron, shot))
+						.offset(0.75, -0.0625, -0.1875D)
 						.setupStandardFire().recoil(Lego.LAMBDA_STANDARD_RECOIL))
 				.setupStandardConfiguration()
 				.anim(LAMBDA_PEPPERBOX_ANIMS).orchestra(Orchestras.ORCHESTRA_PEPPERBOX)
