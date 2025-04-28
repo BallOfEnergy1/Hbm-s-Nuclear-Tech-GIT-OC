@@ -2,18 +2,15 @@ package com.hbm.inventory.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 //@invtweaks.api.container.ChestContainer(rowSize = 5)
-public class ContainerSafe extends Container {
-
-	private IInventory diFurnace;
+public class ContainerSafe extends ContainerCrateBase {
 
 	public ContainerSafe(InventoryPlayer invPlayer, IInventory tedf) {
-		diFurnace = tedf;
+		super(invPlayer, tedf);
 
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 5; j++) {
@@ -41,11 +38,11 @@ public class ContainerSafe extends Container {
 			ItemStack var5 = var4.getStack();
 			var3 = var5.copy();
 
-			if(par2 <= diFurnace.getSizeInventory() - 1) {
-				if(!this.mergeItemStack(var5, diFurnace.getSizeInventory(), this.inventorySlots.size(), true)) {
+			if(par2 <= crate.getSizeInventory() - 1) {
+				if(!this.mergeItemStack(var5, crate.getSizeInventory(), this.inventorySlots.size(), true)) {
 					return null;
 				}
-			} else if(!this.mergeItemStack(var5, 0, diFurnace.getSizeInventory(), false)) {
+			} else if(!this.mergeItemStack(var5, 0, crate.getSizeInventory(), false)) {
 				return null;
 			}
 
@@ -61,6 +58,6 @@ public class ContainerSafe extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return diFurnace.isUseableByPlayer(player);
+		return crate.isUseableByPlayer(player);
 	}
 }
