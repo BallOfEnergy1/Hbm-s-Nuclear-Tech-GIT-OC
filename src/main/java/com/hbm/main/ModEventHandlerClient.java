@@ -226,6 +226,15 @@ public class ModEventHandlerClient {
 					text.add("Meta: " + world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ));
 					ILookOverlay.printGeneric(event, "DEBUG", 0xffff00, 0x4040000, text);*/
 
+					if(ClientConfig.SHOW_BLOCK_META_OVERLAY.get()) {
+						Block b = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+						int i = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+						List<String> text = new ArrayList();
+						text.add(b.getUnlocalizedName());
+						text.add("Meta: " + i);
+						ILookOverlay.printGeneric(event, "DEBUG", 0xffff00, 0x4040000, text);
+					}
+
 				} else if(mop.typeOfHit == mop.typeOfHit.ENTITY) {
 					Entity entity = mop.entityHit;
 
@@ -823,8 +832,7 @@ public class ModEventHandlerClient {
 	//@SubscribeEvent
 	public void onRenderStorm(RenderHandEvent event) {
 
-		if(BlockAshes.ashes == 0)
-			return;
+		if(BlockAshes.ashes <= 0) return;
 
 		GL11.glPushMatrix();
 
@@ -898,7 +906,7 @@ public class ModEventHandlerClient {
 		Minecraft mc = Minecraft.getMinecraft();
 		ArmorNo9.updateWorldHook(mc.theWorld);
 
-		boolean supportsHighRenderDistance = FMLClientHandler.instance().hasOptifine() || Loader.isModLoaded("angelica");
+		boolean supportsHighRenderDistance = FMLClientHandler.instance().hasOptifine() || Loader.isModLoaded(Compat.MOD_ANG);
 
 		if(mc.gameSettings.renderDistanceChunks > 16 && GeneralConfig.enableRenderDistCheck && !supportsHighRenderDistance) {
 			mc.gameSettings.renderDistanceChunks = 16;
@@ -931,7 +939,6 @@ public class ModEventHandlerClient {
 
 			//prune other entities' muzzle flashes
 			if(mc.theWorld.getTotalWorldTime() % 30 == 0) {
-				Iterator itr = ItemRenderWeaponBase.flashMap.keySet().iterator();
 				long millis = System.currentTimeMillis();
 				//dead entities may have later insertion order than actively firing ones, so we be safe
 				ItemRenderWeaponBase.flashMap.values().removeIf(entry -> millis - entry.longValue() >= 150);
@@ -984,10 +991,6 @@ public class ModEventHandlerClient {
 				MainRegistry.logger.info("Taking a screenshot of ALL items, if you did this by mistake: fucking lmao get rekt nerd");
 
 				List<Item> ignoredItems = Arrays.asList(
-					ModItems.assembly_template,
-					ModItems.crucible_template,
-					ModItems.chemistry_template,
-					ModItems.chemistry_icon,
 					ModItems.achievement_icon,
 					Items.spawn_egg,
 					Item.getItemFromBlock(Blocks.mob_spawner)
@@ -1463,7 +1466,7 @@ public class ModEventHandlerClient {
 			}
 
 			double d = Math.random();
-			if(d < 0.1) main.splashText = "Redditors aren't people!";
+			if(d < 0.025) main.splashText = "Redditors aren't people!";
 		}
 	}
 
