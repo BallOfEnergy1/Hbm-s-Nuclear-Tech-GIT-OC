@@ -18,6 +18,7 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.ItemEnums.EnumChunkType;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemDrive.EnumDriveType;
 import com.hbm.items.special.ItemBedrockOre.EnumBedrockOre;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.Compat;
@@ -173,7 +174,6 @@ public class ShredderRecipes extends SerializableRecipe {
 		ShredderRecipes.setRecipe(Blocks.tnt, new ItemStack(Items.gunpowder, Compat.isModLoaded(Compat.MOD_GT6) ? 4 : 5));
 		ShredderRecipes.setRecipe(DictFrame.fromOne(ModBlocks.stone_resource, EnumStoneType.LIMESTONE), new ItemStack(ModItems.powder_limestone, 4));
 		ShredderRecipes.setRecipe(ModBlocks.stone_gneiss, new ItemStack(ModItems.powder_lithium_tiny, 1));
-		ShredderRecipes.setRecipe(ModItems.powder_lapis, new ItemStack(ModItems.powder_cobalt_tiny, 1));
 		ShredderRecipes.setRecipe(ModItems.fragment_neodymium, new ItemStack(ModItems.powder_neodymium_tiny, 1));
 		ShredderRecipes.setRecipe(ModItems.fragment_cobalt, new ItemStack(ModItems.powder_cobalt_tiny, 1));
 		ShredderRecipes.setRecipe(ModItems.fragment_niobium, new ItemStack(ModItems.powder_niobium_tiny, 1));
@@ -210,14 +210,19 @@ public class ShredderRecipes extends SerializableRecipe {
 		ShredderRecipes.setRecipe(ModBlocks.block_slag, new ItemStack(ModItems.powder_cement, 4));
 		ShredderRecipes.setRecipe(ModBlocks.ore_aluminium, DictFrame.fromOne(ModItems.chunk_ore, EnumChunkType.CRYOLITE, 2));
 
+		ShredderRecipes.setRecipe(new ItemStack(ModItems.drive, 1, EnumDriveType.FLASH_BROKEN.ordinal()), new ItemStack(ModItems.powder_polymer, 2));
+		ShredderRecipes.setRecipe(new ItemStack(ModItems.drive, 1, EnumDriveType.DISK_BROKEN.ordinal()), new ItemStack(ModItems.powder_polymer, 4));
+
 		List<ItemStack> logs = OreDictionary.getOres("logWood");
 		List<ItemStack> planks = OreDictionary.getOres("plankWood");
 		List<ItemStack> saplings = OreDictionary.getOres("treeSapling");
+		List<ItemStack> lapis = OreDictionary.getOres("dustLapis");
 
 		for(ItemStack log : logs) ShredderRecipes.setRecipe(log, new ItemStack(ModItems.powder_sawdust, 4));
 		for(ItemStack plank : planks) ShredderRecipes.setRecipe(plank, new ItemStack(ModItems.powder_sawdust, 1));
 		for(ItemStack sapling : saplings) ShredderRecipes.setRecipe(sapling, new ItemStack(Items.stick, 1));
-
+		for(ItemStack dust : lapis) ShredderRecipes.setRecipe(dust, new ItemStack(ModItems.powder_cobalt_tiny, 1));
+		
 		for(EnumBedrockOre ore : EnumBedrockOre.values()) {
 			int i = ore.ordinal();
 			ShredderRecipes.setRecipe(new ItemStack(ModItems.ore_bedrock, 1, i), new ItemStack(ModItems.ore_enriched, 1, i));
@@ -271,8 +276,6 @@ public class ShredderRecipes extends SerializableRecipe {
 		ShredderRecipes.setRecipe(new ItemStack(ModBlocks.steel_scaffold, 1, OreDictionary.WILDCARD_VALUE), new ItemStack(ModItems.powder_steel_tiny, 4));
 		ShredderRecipes.setRecipe(ModItems.coil_copper, new ItemStack(ModItems.powder_red_copper, 1));
 		ShredderRecipes.setRecipe(ModItems.coil_copper_torus, new ItemStack(ModItems.powder_red_copper, 2));
-		ShredderRecipes.setRecipe(ModItems.coil_advanced_alloy, new ItemStack(ModItems.powder_advanced_alloy, 1));
-		ShredderRecipes.setRecipe(ModItems.coil_advanced_torus, new ItemStack(ModItems.powder_advanced_alloy, 2));
 		ShredderRecipes.setRecipe(ModItems.coil_gold, new ItemStack(ModItems.powder_gold, 1));
 		ShredderRecipes.setRecipe(ModItems.coil_gold_torus, new ItemStack(ModItems.powder_gold, 2));
 		ShredderRecipes.setRecipe(ModItems.coil_tungsten, new ItemStack(ModItems.powder_tungsten, 1));

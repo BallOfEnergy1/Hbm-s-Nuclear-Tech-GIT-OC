@@ -10,13 +10,15 @@ import com.hbm.inventory.container.ContainerMachinePUREX;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.gui.GUIMachinePUREX;
-import com.hbm.inventory.recipes.PUREXRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.lib.Library;
+import com.hbm.main.MainRegistry;
+import com.hbm.main.NTMSounds;
 import com.hbm.module.machine.ModuleMachinePUREX;
+import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.IUpgradeInfoProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
@@ -26,6 +28,7 @@ import com.hbm.util.i18n.I18nUtil;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import api.hbm.redstoneoverradio.IRORValueProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -37,7 +40,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-public class TileEntityMachinePUREX extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IUpgradeInfoProvider, IControlReceiver, IGUIProvider {
+public class TileEntityMachinePUREX extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IUpgradeInfoProvider, IControlReceiver, IGUIProvider, IRORValueProvider {
 
 	public FluidTank[] inputTanks;
 	public FluidTank[] outputTanks;
@@ -49,6 +52,8 @@ public class TileEntityMachinePUREX extends TileEntityMachineBase implements IEn
 	public boolean frame = false;
 	public int anim;
 	public int prevAnim;
+	
+	private AudioWrapper audio;
 
 	public ModuleMachinePUREX purexModule;
 	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT(this);
@@ -80,7 +85,7 @@ public class TileEntityMachinePUREX extends TileEntityMachineBase implements IEn
 		
 		if(!worldObj.isRemote) {
 			
-			GenericRecipe recipe = PUREXRecipes.INSTANCE.recipeNameMap.get(purexModule.recipe);
+			GenericRecipe recipe = purexModule.getRecipe();
 			if(recipe != null) {
 				this.maxPower = recipe.power * 100;
 			}
@@ -114,12 +119,52 @@ public class TileEntityMachinePUREX extends TileEntityMachineBase implements IEn
 		} else {
 			
 			this.prevAnim = this.anim;
-			if(this.didProcess) this.anim++;
 			
 			if(worldObj.getTotalWorldTime() % 20 == 0) {
 				frame = !worldObj.getBlock(xCoord, yCoord + 5, zCoord).isAir(worldObj, xCoord, yCoord + 5, zCoord);
 			}
+
+			if(didProcess) {
+				
+				this.anim++;
+
+				if(MainRegistry.proxy.me().getDistance(xCoord , yCoord, zCoord) < 25) {
+					if(audio == null) {
+						audio = createAudioLoop();
+						audio.startSound();
+					} else if(!audio.isPlaying()) {
+						audio = rebootAudio(audio);
+					}
+					audio.keepAlive();
+					audio.updateVolume(this.getVolume(1F));
+					audio.updatePitch(0.75F);
+					
+				} else {
+					if(audio != null) {
+						audio.stopSound();
+						audio = null;
+					}
+				}
+			} else {
+				if(audio != null) {
+					audio.stopSound();
+					audio = null;
+				}
+			}
 		}
+	}
+
+	@Override public AudioWrapper createAudioLoop() {
+		return MainRegistry.proxy.getLoopedSound(NTMSounds.CHEMPLANT_LOOP, xCoord, yCoord, zCoord, 1F, 15F, 0.75F, 15);
+	}
+
+	@Override public void onChunkUnload() {
+		if(audio != null) { audio.stopSound(); audio = null; }
+	}
+
+	@Override public void invalidate() {
+		super.invalidate();
+		if(audio != null) { audio.stopSound(); audio = null; }
 	}
 	
 	public DirPos[] getConPos() {
@@ -235,7 +280,7 @@ public class TileEntityMachinePUREX extends TileEntityMachineBase implements IEn
 			int index = data.getInteger("index");
 			String selection = data.getString("selection");
 			if(index == 0) {
-				this.purexModule.recipe = selection;
+				this.purexModule.setRecipe(selection, false);
 				this.markChanged();
 			}
 		}
@@ -282,5 +327,22 @@ public class TileEntityMachinePUREX extends TileEntityMachineBase implements IEn
 		upgrades.put(UpgradeType.POWER, 3);
 		upgrades.put(UpgradeType.OVERDRIVE, 3);
 		return upgrades;
+	}
+
+	@Override
+	public String[] getFunctionInfo() {
+		return new String[] {
+				PREFIX_VALUE + "progress",
+				PREFIX_VALUE + "recipe",
+				PREFIX_VALUE + "active",
+		};
+	}
+
+	@Override
+	public String provideRORValue(String name) {
+		if((PREFIX_VALUE + "progress").equals(name))	return "" + (int) Math.round(this.purexModule.progress * 100);
+		if((PREFIX_VALUE + "recipe").equals(name))		return this.purexModule.getRecipeName();
+		if((PREFIX_VALUE + "active").equals(name))		return "" + (this.didProcess ? 1 : 0);
+		return null;
 	}
 }

@@ -15,6 +15,8 @@ import com.hbm.inventory.container.ContainerRBMKRod;
 import com.hbm.inventory.gui.GUIRBMKRod;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemRBMKRod;
+import com.hbm.saveddata.satellites.SatelliteRayScan;
+import com.hbm.saveddata.satellites.SatelliteRayScan.RayEvent;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 import com.hbm.util.BufferUtil;
 import com.hbm.util.CompatEnergyControl;
@@ -106,7 +108,7 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 	public void invalidate() {
 		super.invalidate();
 		
-		if(slots[0] != null && slots[0].getItem() instanceof ItemRBMKRod && ItemRBMKRod.getHullHeat(slots[0]) >= 150 && !RBMKDials.getMeltdownsDisabled(worldObj)) {
+		if(slots[0] != null && slots[0].getItem() instanceof ItemRBMKRod && ItemRBMKRod.getHullHeat(slots[0]) >= 1500 && !RBMKDials.getMeltdownsDisabled(worldObj)) {
 			this.meltdown();
 		}
 	}
@@ -117,6 +119,9 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 		if(!worldObj.isRemote) {
 
 			if(slots[0] != null && slots[0].getItem() instanceof ItemRBMKRod) {
+				
+				if(this.fluxQuantity > 0 && worldObj.getTotalWorldTime() % 200 == 0)
+					SatelliteRayScan.reportEvent(worldObj, xCoord, yCoord, zCoord, RayEvent.INFO_NUCLEAR, 300);
 
 				ItemRBMKRod rod = ((ItemRBMKRod)slots[0].getItem());
 				this.rodColor = rod.colorTint;
@@ -443,7 +448,7 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 	@Callback(direct = true)
 	@Optional.Method(modid = "OpenComputers")
 	public Object[] getFluxRatio(Context context, Arguments args) {
-		return new Object[] {fluxFastRatio};
+		return new Object[] {lastFluxRatio};
 	}
 
 	@Callback(direct = true)
@@ -507,7 +512,7 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 
 		return new Object[] {
 			heat, returnValues.get(0), returnValues.get(1),
-			fluxQuantity, fluxFastRatio, returnValues.get(2), returnValues.get(3), returnValues.get(4),
+			lastFluxQuantity, lastFluxRatio, returnValues.get(2), returnValues.get(3), returnValues.get(4),
 			((RBMKRod)this.getBlockType()).moderated, xCoord, yCoord, zCoord
 		};
 	}
@@ -567,9 +572,9 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 			if((PREFIX_VALUE + "depletion").equals(name))	return "" + (int) (100 - ItemRBMKRod.getEnrichment(slots[0]) * 100);
 			if((PREFIX_VALUE + "xenon").equals(name))		return "" + (int) (ItemRBMKRod.getPoison(slots[0]));
 		}
-		if((PREFIX_VALUE + "fastflux").equals(name))		return "" + (int) Math.ceil(fluxFromType(NType.FAST));
-		if((PREFIX_VALUE + "slowflux").equals(name))		return "" + (int) Math.ceil(fluxFromType(NType.SLOW));
-		if((PREFIX_VALUE + "flux").equals(name))			return "" + (int) Math.ceil(fluxFromType(NType.ANY));
+		if((PREFIX_VALUE + "fastflux").equals(name))		return "" + (int) (lastFluxQuantity * lastFluxRatio);
+		if((PREFIX_VALUE + "slowflux").equals(name))		return "" + (int) (lastFluxQuantity * (1 - lastFluxRatio));
+		if((PREFIX_VALUE + "flux").equals(name))			return "" + ((int) (lastFluxQuantity * lastFluxRatio) + (int) (lastFluxQuantity * (1 - lastFluxRatio)));
 		return null;
 	}
 }

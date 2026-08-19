@@ -1,6 +1,5 @@
 package com.hbm.items.armor;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
 import org.lwjgl.opengl.GL11;
@@ -8,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
-import com.hbm.render.model.ModelCloak;
 import com.hbm.render.model.ModelGoggles;
 import com.hbm.render.model.ModelHat;
 
@@ -33,7 +31,6 @@ public class ArmorModel extends ItemArmor {
 
 	@SideOnly(Side.CLIENT) private ModelGoggles modelGoggles;
 	@SideOnly(Side.CLIENT) private ModelHat modelHat;
-	@SideOnly(Side.CLIENT) private ModelCloak modelCloak;
 
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation[] gogglesBlurs;
@@ -57,12 +54,6 @@ public class ArmorModel extends ItemArmor {
 				return modelHat;
 			}
 		}
-		if(this == ModItems.cape_radiation || this == ModItems.cape_gasmask || this == ModItems.cape_schrabidium || this == ModItems.cape_hidden) {
-			if(armorSlot == 1) {
-				if(modelCloak == null) modelCloak = new ModelCloak();
-				return modelCloak;
-			}
-		}
 		return null;
 	}
 
@@ -71,27 +62,13 @@ public class ArmorModel extends ItemArmor {
 		if(stack.getItem() == ModItems.goggles) {
 			return "hbm:textures/models/Goggles.png";
 		}
-		if(stack.getItem() == ModItems.cape_radiation) {
-			return "hbm:textures/models/capes/CapeRadiation.png";
-		}
-		if(stack.getItem() == ModItems.cape_gasmask) {
-			return "hbm:textures/models/capes/CapeGasMask.png";
-		}
-		if(stack.getItem() == ModItems.cape_schrabidium) {
-			return "hbm:textures/models/capes/CapeSchrabidium.png";
-		}
-		if(stack.getItem() == ModItems.cape_hidden) {
-			return "hbm:textures/models/capes/CapeHidden.png";
-		}
-
 		return "hbm:textures/models/capes/CapeUnknown.png";
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void renderHelmetOverlay(ItemStack stack, EntityPlayer player, ScaledResolution resolution, float partialTicks, boolean hasScreen, int mouseX, int mouseY) {
 
-		if(this != ModItems.goggles && this != ModItems.hazmat_helmet_red && this != ModItems.hazmat_helmet_grey)
-			return;
+		if(this != ModItems.goggles && this != ModItems.hazmat_helmet_red && this != ModItems.hazmat_helmet_grey) return;
 		
 		if(gogglesBlurs == null) gogglesBlurs = IntStream.range(0, 6)
 				.mapToObj(i -> new ResourceLocation(RefStrings.MODID + ":textures/misc/overlay_goggles_" + i + ".png"))
@@ -122,12 +99,5 @@ public class ArmorModel extends ItemArmor {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
-	}
-
-	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool) {
-		if(this == ModItems.cape_radiation) list.add("Avalible for everyone");
-		if(this == ModItems.cape_gasmask) list.add("Avalible for everyone");
-		if(this == ModItems.cape_schrabidium) list.add("Avalible for everyone");
 	}
 }

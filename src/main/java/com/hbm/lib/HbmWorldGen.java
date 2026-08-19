@@ -140,26 +140,10 @@ public class HbmWorldGen implements IWorldGenerator {
 
 			DungeonToolbox.generateOre(world, rand, i, j, WorldConfig.limestoneSpawn, 16, 25, 30, ModBlocks.stone_resource, EnumStoneType.LIMESTONE.ordinal());
 
-			if(WorldConfig.newBedrockOres) {
-
-				if(rand.nextInt(10) == 0) {
-					int randPosX = i + rand.nextInt(2) + 8;
-					int randPosZ = j + rand.nextInt(2) + 8;
-
-					BedrockOre.generate(world, randPosX, randPosZ, new ItemStack(ModItems.bedrock_ore_base), null, 0xD78A16, 1);
-				}
-
-			} else {
-
-				if(rand.nextInt(3) == 0) {
-					@SuppressWarnings("unchecked")
-					WeightedRandomGeneric<BedrockOreDefinition> item = (WeightedRandomGeneric<BedrockOreDefinition>) WeightedRandom.getRandomItem(rand, BedrockOre.weightedOres);
-					BedrockOreDefinition def = item.get();
-
-					int randPosX = i + rand.nextInt(2) + 8;
-					int randPosZ = j + rand.nextInt(2) + 8;
-					BedrockOre.generate(world, randPosX, randPosZ, def.stack, def.acid, def.color, def.tier);
-				}
+			if(rand.nextInt(10) == 0) {
+				int randPosX = i + rand.nextInt(2) + 8;
+				int randPosZ = j + rand.nextInt(2) + 8;
+				BedrockOre.generateAuto(world, randPosX, randPosZ);
 			}
 
 			if(GeneralConfig.enable528ColtanSpawn) {
@@ -345,22 +329,13 @@ public class HbmWorldGen implements IWorldGenerator {
 				}
 			}
 
-			if (WorldConfig.geyserChlorine > 0 && biome == BiomeGenBase.plains && rand.nextInt(WorldConfig.geyserWater) == 0) {
+			if (WorldConfig.geyserChlorine > 0 && biome == BiomeGenBase.plains && rand.nextInt(WorldConfig.geyserChlorine) == 0) {
 				int x = i + rand.nextInt(16);
 				int z = j + rand.nextInt(16);
 				int y = world.getHeightValue(x, z);
 
 				if(world.getBlock(x, y - 1, z) == Blocks.grass)
 					new Geyser().generate(world, rand, x, y, z);
-			}
-
-			if (WorldConfig.geyserWater > 0 && biome == BiomeGenBase.desert && rand.nextInt(WorldConfig.geyserChlorine) == 0) {
-				int x = i + rand.nextInt(16);
-				int z = j + rand.nextInt(16);
-				int y = world.getHeightValue(x, z);
-
-				if(world.getBlock(x, y - 1, z) == Blocks.sand)
-					new GeyserLarge().generate(world, rand, x, y, z);
 			}
 
 			if (WorldConfig.capsuleStructure > 0 && biome == BiomeGenBase.beach && rand.nextInt(WorldConfig.capsuleStructure) == 0) {
@@ -380,20 +355,6 @@ public class HbmWorldGen implements IWorldGenerator {
 
 					if(GeneralConfig.enableDebugMode)
 						MainRegistry.logger.info("[Debug] Successfully spawned capsule at " + x + " " + z);
-				}
-			}
-
-			if (WorldConfig.geyserVapor > 0 && rand.nextInt(WorldConfig.geyserVapor) == 0) {
-				int x = i + rand.nextInt(16);
-				int z = j + rand.nextInt(16);
-				int y = world.getHeightValue(x, z);
-				
-				for(int k = 1; k >= -1; k--) {
-					if(world.getBlock(x, y + k, z) == Blocks.stone) {
-						world.setBlock(x, y + k, z, ModBlocks.geysir_vapor);
-						MainRegistry.logger.info("[Debug] Successfully spawned vapor geyser at " + x + " " + z);
-						break;
-					}
 				}
 			}
 

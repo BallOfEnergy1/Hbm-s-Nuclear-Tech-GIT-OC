@@ -41,9 +41,7 @@ public class EntityMappings {
 
 	public static void writeMappings() {
 
-		addEntity(EntityRocket.class, "entity_rocket", 250);
 		addEntity(EntityBullet.class, "entity_bullet", 250);
-		addEntity(EntitySchrab.class, "entity_schrabnel", 500);
 		addEntity(EntityMissileGeneric.class, "entity_missile_generic", 1000);
 		addEntity(EntityMissileDecoy.class, "entity_missile_decoy", 1000);
 		addEntity(EntityMissileStrong.class, "entity_missile_strong", 1000);
@@ -94,6 +92,7 @@ public class EntityMappings {
 		addEntity(EntityBombletZeta.class, "entity_zeta", 1000);
 		addEntity(EntityOrangeFX.class, "entity_agent_orange", 1000);
 		addEntity(EntityDeathBlast.class, "entity_laser_blast", 1000);
+		addEntity(EntityOrbitalLaser.class, "entity_orbital_laser", 1000);
 		addEntity(EntityBurningFOEQ.class, "entity_burning_foeq", 1000);
 		addEntity(EntityFallingNuke.class, "entity_falling_bomb", 1000);
 		addEntity(EntityBulletBaseNT.class, "entity_bullet_mk3", 250, false);
@@ -106,7 +105,6 @@ public class EntityMappings {
 		addEntity(EntityDuchessGambit.class, "entity_duchessgambit", 1000);
 		addEntity(EntityMissileEMPStrong.class, "entity_missile_emp_strong", 1000);
 		addEntity(EntityEMP.class, "entity_emp_logic", 1000);
-		addEntity(EntityWaterSplash.class, "entity_water_splash", 1000);
 		addEntity(EntityBobmazon.class, "entity_bobmazon_delivery", 1000);
 		addEntity(EntityMissileCustom.class, "entity_custom_missile", 1000);
 		addEntity(EntityBalefire.class, "entity_balefire", 1000);
@@ -121,7 +119,6 @@ public class EntityMappings {
 		addEntity(EntityDeliveryDrone.class, "entity_delivery_drone", 250, false);
 		addEntity(EntityRequestDrone.class, "entity_request_drone", 250, false);
 		addEntity(EntityCloudTom.class, "entity_moonstone_blast", 1000);
-		addEntity(EntityBeamVortex.class, "entity_vortex_beam", 1000);
 		addEntity(EntityFireworks.class, "entity_firework_ball", 1000);
 		addEntity(EntityWastePearl.class, "entity_waste_pearl", 1000);
 		addEntity(EntityBOTPrimeHead.class, "entity_balls_o_tron",  1000);
@@ -138,7 +135,6 @@ public class EntityMappings {
 		addEntity(EntitySiegeLaser.class, "entity_ntm_siege_laser", 1000);
 		addEntity(EntityTNTPrimedBase.class, "entity_ntm_tnt_primed", 1000);
 		addEntity(EntityGrenadeBouncyGeneric.class, "entity_grenade_bouncy_generic", 250);
-		addEntity(EntityGrenadeImpactGeneric.class, "entity_grenade_impact_generic", 250);
 		addEntity(EntityMinecartCrate.class, "entity_ntm_cart_crate", 250, false);
 		addEntity(EntityMinecartDestroyer.class, "entity_ntm_cart_destroyer", 250, false);
 		addEntity(EntityMinecartOre.class, "entity_ntm_cart_ore", 250, false);

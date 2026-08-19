@@ -3,16 +3,16 @@ package com.hbm.world.feature;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hbm.blocks.BlockEnums.EnumStoneType;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockBedrockOreTE.TileEntityBedrockOre;
 import com.hbm.config.WorldConfig;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.OreDictManager.DictFrame;
 import com.hbm.inventory.fluid.Fluids;
-import com.hbm.items.ItemEnums.EnumChunkType;
 import com.hbm.items.ModItems;
+import com.hbm.items.special.ItemBedrockOreBase;
 import com.hbm.items.special.ItemBedrockOre.EnumBedrockOre;
+import com.hbm.items.special.ItemBedrockOreNew.BedrockOreType;
 import com.hbm.util.WeightedRandomGeneric;
 
 import net.minecraft.block.Block;
@@ -23,30 +23,9 @@ import net.minecraft.world.World;
 
 public class BedrockOre {
 
-	public static List<WeightedRandomGeneric<BedrockOreDefinition>> weightedOres = new ArrayList();
 	public static List<WeightedRandomGeneric<BedrockOreDefinition>> weightedOresNether = new ArrayList();
 	
 	public static void init() {
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.IRON,													1),													WorldConfig.bedrockIronSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.COPPER,												1),													WorldConfig.bedrockCopperSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.BORAX,													3,	new FluidStack(Fluids.SULFURIC_ACID, 500)),		WorldConfig.bedrockBoraxSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.CHLOROCALCITE,											3,	new FluidStack(Fluids.SULFURIC_ACID, 500)),		WorldConfig.bedrockChlorocalciteSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.ASBESTOS,												2),													WorldConfig.bedrockAsbestosSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.NIOBIUM,												2,	new FluidStack(Fluids.PEROXIDE, 500)),				WorldConfig.bedrockNiobiumSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.NEODYMIUM,												3,	new FluidStack(Fluids.PEROXIDE, 500)),				WorldConfig.bedrockNeodymiumSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.TITANIUM,												2,	new FluidStack(Fluids.SULFURIC_ACID, 500)),		WorldConfig.bedrockTitaniumSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.TUNGSTEN,												2,	new FluidStack(Fluids.PEROXIDE, 500)),				WorldConfig.bedrockTungstenSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.GOLD,													1),													WorldConfig.bedrockGoldSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.URANIUM,												4,	new FluidStack(Fluids.SULFURIC_ACID, 500)),		WorldConfig.bedrockUraniumSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.THORIUM,												4,	new FluidStack(Fluids.SULFURIC_ACID, 500)),		WorldConfig.bedrockThoriumSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(EnumBedrockOre.FLUORITE,												1),													WorldConfig.bedrockFluoriteSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(new ItemStack(Items.coal, 8),											1,	0x202020),										WorldConfig.bedrockCoalSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(new ItemStack(ModItems.niter, 4),										2,	0x808080,	new FluidStack(Fluids.PEROXIDE, 500)),	WorldConfig.bedrockNiterSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(new ItemStack(Items.redstone, 4),										1,	0xd01010),										WorldConfig.bedrockRedstoneSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(new ItemStack(Items.emerald, 4),										1,	0x3FDD85),										WorldConfig.bedrockEmeraldSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(DictFrame.fromOne(ModItems.chunk_ore, EnumChunkType.RARE),			2,	0x8F9999,	new FluidStack(Fluids.PEROXIDE, 500)),	WorldConfig.bedrockRareEarthSpawn);
-		registerBedrockOre(weightedOres, new BedrockOreDefinition(DictFrame.fromOne(ModBlocks.stone_resource, EnumStoneType.BAUXITE, 2),1,	0xEF7213),										WorldConfig.bedrockBauxiteSpawn);
-
 		registerBedrockOre(weightedOresNether, new BedrockOreDefinition(new ItemStack(Items.glowstone_dust, 4),		1,	0xF9FF4D),							WorldConfig.bedrockGlowstoneSpawn);
 		registerBedrockOre(weightedOresNether, new BedrockOreDefinition(new ItemStack(ModItems.powder_fire, 4),		1,	0xD7341F),							WorldConfig.bedrockPhosphorusSpawn);
 		registerBedrockOre(weightedOresNether, new BedrockOreDefinition(new ItemStack(Items.quartz, 4),				1,	0xF0EFDD),							WorldConfig.bedrockQuartzSpawn);
@@ -59,6 +38,37 @@ public class BedrockOre {
 
 	public static void generate(World world, int x, int z, ItemStack stack, FluidStack acid, int color, int tier) {
 		generate(world, x, z, stack, acid, color, tier, ModBlocks.stone_depth);
+	}
+
+	public static void generateAuto(World world, int x, int z) {
+		double totalLevel = 0;
+		for(BedrockOreType type : BedrockOreType.values()) {
+			totalLevel += ItemBedrockOreBase.getOreLevel(x, z, type);
+		}
+		
+		totalLevel /= BedrockOreType.values().length;
+		FluidStack acid = getBoreFluid(totalLevel);
+		int tier = getTier(totalLevel);
+		
+		generate(world, x, z, new ItemStack(ModItems.bedrock_ore_base), acid, 0xD78A16, tier, ModBlocks.stone_depth);
+	}
+
+	public static final FluidStack BORE_TIER_1 = null;
+	public static final FluidStack BORE_TIER_2 = new FluidStack(Fluids.WATER, 1_000);
+	public static final FluidStack BORE_TIER_3 = new FluidStack(Fluids.SULFURIC_ACID, 1_000);
+	public static final FluidStack BORE_TIER_4 = new FluidStack(Fluids.SOLVENT, 2_000);
+
+	public static FluidStack getBoreFluid(double density) {
+		if(density > 1.5) return BORE_TIER_4;
+		if(density > 1) return BORE_TIER_3;
+		if(density > 0.75) return BORE_TIER_2;
+		return BORE_TIER_1;
+	}
+	public static int getTier(double density) {
+		if(density > 1.5) return 4;
+		if(density > 1) return 3;
+		if(density > 0.75) return 2;
+		return 1;
 	}
 
 	public static void generate(World world, int x, int z, ItemStack stack, FluidStack acid, int color, int tier, Block depthRock) {

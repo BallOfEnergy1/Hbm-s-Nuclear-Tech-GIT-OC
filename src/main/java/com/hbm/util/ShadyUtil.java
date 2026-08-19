@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -23,8 +22,6 @@ public class ShadyUtil {
 	public static String Dafnik = "3af1c262-61c0-4b12-a4cb-424cc3a9c8c0";
 	public static String a20 = "4729b498-a81c-42fd-8acd-20d6d9f759e0";
 	public static String LordVertice = "a41df45e-13d8-4677-9398-090d3882b74f";
-	public static String CodeRed_ = "912ec334-e920-4dd7-8338-4d9b2d42e0a1";
-	public static String dxmaster769 = "62c168b2-d11d-4dbf-9168-c6cea3dcb20e";
 	public static String Dr_Nostalgia = "e82684a7-30f1-44d2-ab37-41b342be1bbd";
 	public static String Samino2 = "87c3960a-4332-46a0-a929-ef2a488d1cda";
 	public static String Hoboy03new = "d7f29d9c-5103-4f6f-88e1-2632ff95973f";
@@ -62,10 +59,6 @@ public class ShadyUtil {
 			"ccd9aa1c-26b9-4dde-8f37-b96f8d99de22", //kakseao
 			});
 
-	// simple cryptographic utils
-	@Deprecated public static String encode(String msg) { return Base64.getEncoder().encodeToString(msg.getBytes()); }
-	@Deprecated public static String decode(String msg) { return new String(Base64.getDecoder().decode(msg)); }
-
 	/** complete fucking shit */
 	public static String smoosh(String s1, String s2, String s3, String s4) {
 
@@ -81,18 +74,12 @@ public class ShadyUtil {
 
 		s += s1;
 		rand.setSeed(b1[0]);
-		s += rand.nextInt(0xffffff);
-		s += s2;
+		s += rand.nextInt(0xffffff) + s2;
 		rand.setSeed(rand.nextInt(0xffffff) + b2[0]);
-		rand.setSeed(b2[0]);
-		s += rand.nextInt(0xffffff);
-		s += s3;
+		s += rand.nextInt(0xffffff) + s3;
 		rand.setSeed(rand.nextInt(0xffffff) + b3[0]);
-		rand.setSeed(b3[0]);
-		s += rand.nextInt(0xffffff);
-		s += s4;
+		s += rand.nextInt(0xffffff) + s4;
 		rand.setSeed(rand.nextInt(0xffffff) + b4[0]);
-		rand.setSeed(b4[0]);
 		s += rand.nextInt(0xffffff);
 		return getHash(s);
 	}

@@ -1,17 +1,31 @@
 package com.hbm.tileentity;
 
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.blocks.ModBlocks;
+import com.hbm.config.GeneralConfig;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTank;
+import com.hbm.lib.Library;
+import com.hbm.main.NTMSounds;
 import com.hbm.packet.toclient.BufPacket;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.util.fauxpointtwelve.BlockPos;
+import com.hbm.util.fauxpointtwelve.DirPos;
 
-import api.hbm.fluidmk2.IFluidUserMK2;
+import api.hbm.energymk2.IEnergyProviderMK2;
+import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluidmk2.IFluidStandardReceiverMK2;
+import api.hbm.fluidmk2.IFluidStandardSenderMK2;
 import api.hbm.tile.ILoadedTile;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +39,60 @@ public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBu
 	public boolean tilted = false;
 	public int tiltBlocksChecked = 0;
 	public int tiltBlocksValid = 0;
+
+	public int tickOffset = -1;
+	public int[] energyRecDelay;
+	public int[] energyProDelay;
+	public int[] fluidRecDelay;
+	public int[] fluidProDelay;
+
+	/** Automatic handling of ports, including dynamic pauses for ports not currently in use */
+	public void autoPort(DirPos[] pos) {
+
+		if(this.tickOffset == -1) {
+			this.tickOffset = Math.abs(BlockPos.getIdentity(xCoord, yCoord, zCoord) % 100);
+		}
+
+		if(this.energyRecDelay == null || this.energyRecDelay.length != pos.length) this.energyRecDelay = new int[pos.length];
+		if(this.energyProDelay == null || this.energyProDelay.length != pos.length) this.energyProDelay = new int[pos.length];
+		if(this.fluidRecDelay == null || this.fluidRecDelay.length != pos.length) this.fluidRecDelay = new int[pos.length];
+		if(this.fluidProDelay == null || this.fluidProDelay.length != pos.length) this.fluidProDelay = new int[pos.length];
+
+		IEnergyReceiverMK2 energyRec = this instanceof IEnergyReceiverMK2 ? (IEnergyReceiverMK2) this : null;
+		IEnergyProviderMK2 energyProv = this instanceof IEnergyProviderMK2 ? (IEnergyProviderMK2) this : null;
+		IFluidStandardReceiverMK2 fluidRec = this instanceof IFluidStandardReceiverMK2 ? (IFluidStandardReceiverMK2) this : null;
+		IFluidStandardSenderMK2 fluidPro = this instanceof IFluidStandardSenderMK2 ? (IFluidStandardSenderMK2) this : null;
+
+		for(int i = 0; i < pos.length; i++) {
+			DirPos port = pos[i];
+
+			if(energyRec != null) { if(energyRecDelay[i] > 0) energyRecDelay[i]--; else energyRecDelay[i] = energyRec.trySubscribe(worldObj, pos[i]).delay; }
+			if(energyProv != null) { if(energyProDelay[i] > 0) energyProDelay[i]--; else energyProDelay[i] = energyProv.tryProvide(worldObj, pos[i]).delay; }
+
+			if(fluidRec != null) if(fluidRecDelay[i] > 0) { fluidRecDelay[i]--; } else {
+				for(FluidTank tank : fluidRec.getReceivingTanks()) {
+					int newDelay = tank.getTankType() != Fluids.NONE ? 20 : fluidRec.trySubscribe(tank.getTankType(), worldObj, port).delay;
+					if(fluidRecDelay[i] <= 0 || newDelay < fluidRecDelay[i]) fluidRecDelay[i] = newDelay;
+				}
+			}
+
+			if(fluidPro != null) if(fluidProDelay[i] > 0) { fluidProDelay[i]--; } else {
+				for(FluidTank tank : fluidPro.getSendingTanks()) {
+					int newDelay = tank.getFill() <= 0 ? 20 : fluidPro.tryProvide(tank, worldObj, port).delay;
+					if(fluidProDelay[i] <= 0 || newDelay < fluidProDelay[i]) fluidProDelay[i] = newDelay;
+				}
+			}
+		}
+	}
+
+	public final DirPos[] ALL_AROUND = new DirPos[] {
+			new DirPos(xCoord, yCoord + 1, zCoord, Library.POS_Y),
+			new DirPos(xCoord, yCoord - 1, zCoord, Library.NEG_Y),
+			new DirPos(xCoord + 1, yCoord, zCoord, Library.POS_X),
+			new DirPos(xCoord - 1, yCoord, zCoord, Library.NEG_X),
+			new DirPos(xCoord, yCoord, zCoord + 1, Library.POS_Z),
+			new DirPos(xCoord, yCoord, zCoord - 1, Library.NEG_Z),
+	};
 
 	protected boolean hasDataChanged = true;
 
@@ -137,9 +205,73 @@ public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBu
 		sendToPlayers(packet, toSendTo);
 	}
 
-	public void checkTilt(BlockPos[] floor, boolean extraHeavy) {
-		if(this.worldObj.getTotalWorldTime() % 20 != 0) return;
-		// TBI i need a break
+	public static enum TiltType {
+		UNAVOIDABLE, CONFIG;
+	}
+
+	public void checkTilt(TiltType cfg, boolean extraHeavy) {
+		boolean doesTilt = false;
+		if(cfg == TiltType.UNAVOIDABLE) doesTilt = true;
+		if(cfg == TiltType.CONFIG && GeneralConfig.enableMachineGravity) doesTilt = true;
+		if(cfg == TiltType.CONFIG && GeneralConfig.enable528MachineGravity) doesTilt = true;
+
+		if(!doesTilt) { this.tilted = false; return; }
+		if(this.getFloorCount() <= 0) { this.tilted = false; return; }
+		if((this.worldObj.getTotalWorldTime() + BlockPos.getIdentity(xCoord, yCoord, zCoord)) % 20 != 0) return;
+
+		if(this.tiltBlocksChecked >= this.getFloorCount()) {
+
+			if(this.tiltBlocksValid >= this.tiltBlocksChecked * 0.95) {
+				this.tilted = false;
+			} else {
+				if(!this.tilted) worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, NTMSounds.METAL_IMPACT, 3F, 1F);
+				this.tilted = true;
+			}
+
+			this.markChanged();
+			this.tiltBlocksChecked = 0;
+			this.tiltBlocksValid = 0;
+		}
+
+		BlockPos pos = getFloorPosFromIndex(this.tiltBlocksChecked);
+		if(pos == null) return;
+
+		Block ground = worldObj.getBlock(pos.getX(), pos.getY(), pos.getZ());
+		this.tiltBlocksChecked++;
+
+		// for extra heavy machines, the ground needs to:
+		// * be a fully solid block (side UP is checked for custom behavior)
+		// * be opaque
+		// * NOT be sand, cloth or ground material
+		// * have an explosion resistance of stone or greater
+		if(extraHeavy) {
+			if(!ground.isBlockSolid(worldObj, pos.getX(), pos.getY(), pos.getZ(), 1)) return;
+			if(!ground.isNormalCube()) return;
+			if(ground.getMaterial() == Material.sand || ground.getMaterial() == Material.cloth || ground.getMaterial() == Material.ground) return;
+			if(ground.getExplosionResistance(null) < Blocks.stone.getExplosionResistance(null)) return;
+			this.tiltBlocksValid++;
+		// for standard machines, the ground needs to:
+		// * be solid at the top
+		// * NOT be sand
+		} else {
+			if(!ground.isSideSolid(worldObj, pos.getX(), pos.getY(), pos.getZ(), ForgeDirection.UP)) return;
+			if(ground.getMaterial() == Material.sand) return;
+			if(ground == ModBlocks.dirt_dead || ground == ModBlocks.dirt_oily || ground == ModBlocks.stone_cracked) return;
+			this.tiltBlocksValid++;
+		}
+	}
+
+	public int getFloorCount() { return 0; }
+	public BlockPos getFloorPosFromIndex(int index) { return null; }
+
+	public BlockPos standardFloor3x3(int index) {
+		return new BlockPos(xCoord - 1 + (index / 2) * 2, yCoord - 1, zCoord - 1 + (index % 2) * 2);
+	}
+	public BlockPos standardFloor5x5(int index) {
+		return new BlockPos(xCoord - 2 + (index / 3) * 2, yCoord - 1, zCoord - 2 + (index % 3) * 2);
+	}
+	public BlockPos standardFloor7x7(int index) {
+		return new BlockPos(xCoord - 3 + (index / 4) * 2, yCoord - 1, zCoord - 3 + (index % 4) * 2);
 	}
 
 	/**

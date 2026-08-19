@@ -632,23 +632,8 @@ public class ModEventHandlerClient {
 	@SubscribeEvent
 	public void onPlaySound(PlaySoundEvent17 e) {
 
-		EntityPlayer player = MainRegistry.proxy.me();
 		Minecraft mc = Minecraft.getMinecraft();
-
-		if(player != null && mc.theWorld != null) {
-			int i = MathHelper.floor_double(player.posX);
-			int j = MathHelper.floor_double(player.posY);
-			int k = MathHelper.floor_double(player.posZ);
-			Block block = mc.theWorld.getBlock(i, j, k);
-
-			if(block == ModBlocks.vacuum) {
-				e.result = null;
-				return;
-			}
-		}
-
 		ResourceLocation r = e.sound.getPositionedSoundLocation();
-
 		WorldClient wc = mc.theWorld;
 
 		//Alright, alright, I give the fuck up, you've wasted my time enough with this bullshit. You win.
@@ -1188,7 +1173,30 @@ public class ModEventHandlerClient {
 				}
 			}
 		}*/
+
+		// slot clicky noises demo
+		/*if(event.phase == Phase.END) {
+
+			if(mc.currentScreen instanceof GuiContainer) {
+				EntityPlayer player = mc.thePlayer;
+				ItemStack held = player.inventory.getItemStack();
+
+				if(!ItemStack.areItemStacksEqual(prevHeld, held)) {
+
+					int prevStack = prevHeld != null ? prevHeld.stackSize : 0;
+					int currStack = held != null ? held.stackSize : 0;
+
+					mc.getSoundHandler().playSound(new PositionedSoundRecord(new ResourceLocation(NTMSounds.VANILLA_ORB), 0.1F, prevStack < currStack ? 1.0F : 0.75F, (float) player.posX, (float) player.posY, (float) player.posZ));
+
+					prevHeld = held != null ? held.copy() : null;
+				}
+			} else {
+				prevHeld = null;
+			}
+		}*/
 	}
+
+	//private static ItemStack prevHeld;
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent

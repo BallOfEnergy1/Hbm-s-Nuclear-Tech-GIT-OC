@@ -44,10 +44,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityBatterySocket extends TileEntityBatteryBase implements IRORValueProvider, IRORInteractive, IInfoProviderEC {
-	
+
+	public boolean frame = false;
+
 	public static BulletConfig discharge;
 	public static BiConsumer<EntityBulletBeamBase, MovingObjectPosition> BEAM_DISCHARGE_HIT = (beam, mop) -> {
-		
+
 		if(mop.typeOfHit == mop.typeOfHit.BLOCK) {
 			beam.worldObj.func_147480_a(mop.blockX, mop.blockY, mop.blockZ, false);
 			explodeDischarge(beam.worldObj, mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
@@ -57,7 +59,7 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 			explodeDischarge(beam.worldObj, mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
 		}
 	};
-	
+
 	public static void explodeDischarge(World world, double x, double y, double z) {
 		ExplosionVNT vnt = new ExplosionVNT(world, x, y, z, 5F);
 		vnt.setEntityProcessor(new EntityProcessorCrossSmooth(1, 20).setDamageClass(DamageClass.ELECTRIC));
@@ -66,7 +68,7 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 		vnt.explode();
 		world.playSoundEffect(x, y, z, "hbm:entity.ufoBlast", 5.0F, 0.9F + world.rand.nextFloat() * 0.2F);
 	}
-	
+
 	static {
 		discharge = new BulletConfig().setupDamageClass(DamageClass.ELECTRIC).setBeam().setSpread(0.0F).setLife(3).setThresholdNegation(20F).setArmorPiercing(0.5F).setRenderRotations(false).setDoesPenetrate(true)
 				.setOnBeamImpact(BEAM_DISCHARGE_HIT);
@@ -81,7 +83,7 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 	public int damageTimer;
 	public int damageTarget;
 	public double scPowerMult = 1D;
-	
+
 	public TileEntityBatterySocket() {
 		super(1);
 	}
@@ -95,7 +97,7 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 		super.updateEntity();
 
 		if(!worldObj.isRemote) {
-			
+
 			if(hasSCLoaded()) {
 				if(this.damageTarget == 0) pickNewSCTarget();
 				this.damageTimer++;
@@ -111,26 +113,31 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 			}
 
 			this.log[19] = avg;
+		} else {
+
+			if(worldObj.getTotalWorldTime() % 20 == 0) {
+				frame = !worldObj.getBlock(xCoord, yCoord + 2, zCoord).isAir(worldObj, xCoord, yCoord + 2, zCoord);
+			}
 		}
 	}
-	
+
 	protected boolean hasSCLoaded() {
 		return slots[0] != null && slots[0].getItem() == ModItems.battery_sc && slots[0].getItemDamage() != EnumBatterySC.EMPTY.ordinal();
 	}
-	
+
 	protected void pickNewSCTarget() {
 		this.damageTimer = 0;
 		//this.damageTarget = 100;
 		this.damageTarget = 1200 + worldObj.rand.nextInt(2400); // 1-3 minutes;
 		this.markChanged();
 	}
-	
+
 	protected void discharge() {
 		pickNewSCTarget();
-		
+
 		ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10);
 		ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
-		
+
 		double x = xCoord + 0.5 - dir.offsetX * 0.5 + rot.offsetX * 0.5;
 		double y = yCoord + 1;
 		double z = zCoord + 0.5 - dir.offsetZ * 0.5 + rot.offsetX * 0.5;
@@ -149,15 +156,15 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 			initialDelta.multiply(1.125D / dominantAxis); // move 1.125 blocks outwards
 			sub.setPosition(xCoord + initialDelta.xCoord, yCoord + initialDelta.yCoord, zCoord + initialDelta.zCoord);
 			Vec3NT actualDelta = new Vec3NT(target.posX - sub.posX, target.posY + target.height / 2 - sub.posY, target.posZ - sub.posZ);
-			
+
 			sub.setRotationsFromVector(actualDelta);
 			sub.performHitscanExternal(actualDelta.lengthVector());
 			worldObj.spawnEntityInWorld(sub);
 		}
-		
+
 		explodeDischarge(worldObj, x + worldObj.rand.nextGaussian() * 0.5, y + worldObj.rand.nextGaussian() * 0.5, z + worldObj.rand.nextGaussian() * 0.5);
 	}
-	
+
 	protected void fluctuate() {
 		double steppy = 1D / 100D;
 		this.scPowerMult += (steppy * (worldObj.rand.nextDouble() * 2 - 1));
@@ -210,11 +217,13 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 	@Override
 	public boolean canExtractItem(int i, ItemStack stack, int j) {
 		if(stack.getItem() instanceof IBatteryItem) {
-			if(i == mode_input && ((IBatteryItem)stack.getItem()).getCharge(stack) == 0) return true;
-			if(i == mode_output && ((IBatteryItem)stack.getItem()).getCharge(stack) == ((IBatteryItem)stack.getItem()).getMaxCharge(stack)) return true;
+			if(i == mode_output && ((IBatteryItem)stack.getItem()).getCharge(stack) == 0) return true;
+			if(i == mode_input && ((IBatteryItem)stack.getItem()).getCharge(stack) == ((IBatteryItem)stack.getItem()).getMaxCharge(stack)) return true;
 		}
 		return false;
 	}
+
+	@Override public boolean isItemValidForSlot(int slot, ItemStack stack) { return stack.getItem() instanceof IBatteryItem; }
 
 	@Override public int[] getAccessibleSlotsFromSide(int side) { return new int[] {0}; }
 
@@ -224,18 +233,18 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 		return power;
 	}
 	@Override public long getMaxPower() { return maxPowerFromStack(slots[0]); }
-	
+
 	@Override
 	public void setPower(long power) {
 		if(slots[0] == null || !(slots[0].getItem() instanceof IBatteryItem)) return;
 		((IBatteryItem) slots[0].getItem()).setCharge(slots[0], power);
 	}
-	
+
 	public static long powerFromStack(ItemStack stack) {
 		if(stack == null || !(stack.getItem() instanceof IBatteryItem)) return 0;
 		return ((IBatteryItem) stack.getItem()).getCharge(stack);
 	}
-	
+
 	public static long maxPowerFromStack(ItemStack stack) {
 		if(stack == null || !(stack.getItem() instanceof IBatteryItem)) return 0;
 		return ((IBatteryItem) stack.getItem()).getMaxCharge(stack);
@@ -310,19 +319,21 @@ public class TileEntityBatterySocket extends TileEntityBatteryBase implements IR
 	public String[] getFunctionInfo() {
 		return new String[] {
 				PREFIX_VALUE + "fill",
+				PREFIX_VALUE + "maxfill",
 				PREFIX_VALUE + "fillpercent",
 				PREFIX_VALUE + "delta",
-				PREFIX_FUNCTION + "setmode" + NAME_SEPARATOR + "mode",
-				PREFIX_FUNCTION + "setmode" + NAME_SEPARATOR + "mode" + PARAM_SEPARATOR + "fallback",
-				PREFIX_FUNCTION + "setredmode" + NAME_SEPARATOR + "mode",
-				PREFIX_FUNCTION + "setredmode" + NAME_SEPARATOR + "mode" + PARAM_SEPARATOR + "fallback",
-				PREFIX_FUNCTION + "setpriority" + NAME_SEPARATOR + "priority",
+				PREFIX_FUNCTION + "setmode" + NAME_SEPARATOR + "mode (0-3)",
+				PREFIX_FUNCTION + "setmode" + NAME_SEPARATOR + "mode" + PARAM_SEPARATOR + "fallback (0-3)",
+				PREFIX_FUNCTION + "setredmode" + NAME_SEPARATOR + "mode (0-3)",
+				PREFIX_FUNCTION + "setredmode" + NAME_SEPARATOR + "mode" + PARAM_SEPARATOR + "fallback (0-3)",
+				PREFIX_FUNCTION + "setpriority" + NAME_SEPARATOR + "priority (0-2)",
 		};
 	}
 
 	@Override
 	public String provideRORValue(String name) {
 		if((PREFIX_VALUE + "fill").equals(name))		return "" + this.getPower();
+		if((PREFIX_VALUE + "maxfill").equals(name))		return "" + this.getMaxPower();
 		if((PREFIX_VALUE + "fillpercent").equals(name))	return "" + this.getPower() * 100 / (Math.max(this.getMaxPower(), 1));
 		if((PREFIX_VALUE + "delta").equals(name))		return "" + delta;
 		return null;
