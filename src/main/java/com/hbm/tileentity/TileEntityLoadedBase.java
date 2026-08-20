@@ -1,5 +1,8 @@
 package com.hbm.tileentity;
 
+import api.hbm.energymk2.IEnergyHandlerMK2;
+import api.hbm.fluidmk2.IFluidUserMK2;
+
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
@@ -8,6 +11,7 @@ import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.lib.Library;
 import com.hbm.main.NTMSounds;
 import com.hbm.packet.toclient.BufPacket;
+import com.hbm.packet.toclient.TESyncPacket;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.util.fauxpointtwelve.BlockPos;
 import com.hbm.util.fauxpointtwelve.DirPos;
@@ -24,12 +28,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBufPacketReceiver {
@@ -97,11 +100,6 @@ public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBu
 	protected boolean hasDataChanged = true;
 
 	private int lastBufHash = -1;
-	private ByteBuf lastBuf = null;
-	// Save on memory. If no players need this data (not being newly-loaded or anything),
-	// just set it to null. This slows down things a *tiny* bit during load due to initializing
-	// the list, but it's not a big deal.
-	private List<EntityPlayerMP> playersNeedingData = null;
 
 	@Override
 	public boolean isLoaded() {
@@ -135,7 +133,7 @@ public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBu
 		super.readFromNBT(nbt);
 		this.muffled = nbt.getBoolean("muffled");
 		this.tilted = nbt.getBoolean("tilted");
-		this.hasDataChanged = true;
+		this.dataChanged();
 	}
 
 	@Override
@@ -170,31 +168,28 @@ public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBu
 		this.hasDataChanged = true;
 	}
 
+	public void updateDataChangedFromTanks(FluidTank... tanks) {
+		for(FluidTank tank : tanks) {
+			if (tank.hasDataChanged) {
+				this.dataChanged();
+				tank.hasDataChanged = false;
+			}
+		}
+	}
+
 	/** Sends a sync packet that uses ByteBuf for efficient information-cramming */
 	public void networkPackNT(int range) {
 		if(worldObj.isRemote) return;
-
-		boolean forceSend = playersNeedingData != null && !playersNeedingData.isEmpty();
 
 		Set<EntityPlayerMP> toSendTo = getPlayersToSendTo(range);
 
 		boolean hasNoNormalReceivers = toSendTo.isEmpty();
 
 		// skip compiling the packet at all in the event it won't be sent to anyone
-		if (hasNoNormalReceivers && !forceSend) return;
+		if (hasNoNormalReceivers) return;
 
 		BufPacket packet = new BufPacket(xCoord, yCoord, zCoord, this);
 		ByteBuf preBuf = packet.getCompiledBuffer();
-
-		// Send data to players that need it, ignoring the cached hashcode.
-		if (forceSend) {
-			//MainRegistry.logger.info("LOAD: Sent TE data in chunk ({}, {})", this.xCoord >> 4, this.zCoord >> 4);
-			sendToPlayers(packet, playersNeedingData);
-			playersNeedingData = null;
-		}
-
-		// skip sending the packet if there are no receivers (already sent to anyone who needs it with forceSend).
-		if (hasNoNormalReceivers) return;
 
 		int hash = preBuf.hashCode();
 		if(lastBufHash != -1 && hash == lastBufHash) return;
@@ -203,6 +198,58 @@ public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBu
 
 		//MainRegistry.logger.info("UPDATE: Sent TE data in chunk ({}, {})", this.xCoord >> 4, this.zCoord >> 4);
 		sendToPlayers(packet, toSendTo);
+	}
+
+	/**
+	 * Sends a sync packet that uses ByteBuf for efficient information-cramming, employing optimization tricks along the way.
+	 * <p>
+	 * This should be used instead of `networkPackNT()` if this tile supports the Data-Change optimization.
+	 * Fluid tanks are automatically factored into the Data-Change optimizations; they do not need to be accounted for, same
+	 * with energy buffers.
+	 * If this is used when the tile does not support the aforementioned optimization, data may not be sent to clients correctly.
+	 */
+	public void networkPackMK2(int range) {
+		if(worldObj.isRemote) return;
+
+		if (this instanceof IFluidUserMK2) {
+			this.updateDataChangedFromTanks(((IFluidUserMK2) this).getAllTanks());
+		}
+		
+		// skip compiling the packet at all if the data hasn't changed at all
+		if (!this.hasDataChanged) return;
+		
+		Set<EntityPlayerMP> toSendTo = getPlayersToSendTo(range);
+
+		// skip compiling the packet at all in the event it won't be sent to anyone
+		if (toSendTo.isEmpty()) return;
+
+		sendToPlayers(new BufPacket(xCoord, yCoord, zCoord, this), toSendTo);
+		hasDataChanged = false;
+	}
+
+	private Set<EntityPlayerMP> getPlayersToSendTo(int range) {
+		Set<EntityPlayerMP> toSendTo = new HashSet<>();
+		// Check if any players are actually within range.
+		// If no player is actually close enough to receive the data, why compile/send it?
+		// This also acts as a pre-calculation step for later where we need to send to all nearby players,
+		// hence why this uses a `SendTo` instead of an `AllAround`.
+		for (Object obj : worldObj.playerEntities) {
+			EntityPlayerMP player = (EntityPlayerMP) obj;
+			if (player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) <= range * range)
+				toSendTo.add(player);
+		}
+		return toSendTo;
+	}
+
+	private static void sendToPlayers(IMessage message, Iterable<EntityPlayerMP> list) {
+		for(EntityPlayerMP player : list) {
+			PacketDispatcher.wrapper.sendTo(message, player);
+		}
+	}
+
+	@Override
+	public Packet getDescriptionPacket() {
+		return new TESyncPacket(xCoord, yCoord, zCoord, this);
 	}
 
 	public static enum TiltType {
@@ -272,79 +319,5 @@ public class TileEntityLoadedBase extends TileEntity implements ILoadedTile, IBu
 	}
 	public BlockPos standardFloor7x7(int index) {
 		return new BlockPos(xCoord - 3 + (index / 4) * 2, yCoord - 1, zCoord - 3 + (index % 4) * 2);
-	}
-
-	/**
-	 * Sends a sync packet that uses ByteBuf for efficient information-cramming, employing optimization tricks along the way.
-	 * <p>
-	 * This should be used instead of `networkPackNT()` if this tile supports the Data-Change optimization (see docs at {@link com.hbm.handler.packet}).
-	 * If this is used when the tile does not support the aforementioned optimization, data may not be sent to clients correctly.
-	 */
-	public void networkPackMK2(int range) {
-		if(worldObj.isRemote) return;
-
-		boolean forceSend = playersNeedingData != null && !playersNeedingData.isEmpty();
-
-		Set<EntityPlayerMP> toSendTo = null;
-
-		if (this.hasDataChanged)
-			toSendTo = getPlayersToSendTo(range);
-
-		boolean hasNoNormalReceivers = toSendTo == null || toSendTo.isEmpty();
-
-		// skip compiling the packet at all in the event it won't be sent to anyone
-		if (hasNoNormalReceivers && !forceSend) return;
-
-		BufPacket packet = new BufPacket(xCoord, yCoord, zCoord, this);
-
-		if (this.hasDataChanged || lastBuf == null) {
-			ByteBuf buffer = packet.getCompiledBuffer();
-			this.lastBuf = buffer.copy();
-		} else
-			packet.writeToCompiledBuffer(lastBuf); // Reuse the last buffer if the data hasn't changed.
-
-		// Send data to players that need it.
-		if (forceSend) {
-			//MainRegistry.logger.info("LOAD: Sent TE data in chunk ({}, {})", this.xCoord >> 4, this.zCoord >> 4);
-			sendToPlayers(packet, playersNeedingData);
-			playersNeedingData = null;
-			hasDataChanged = false;
-		}
-
-		// skip sending the packet if there are no receivers (already sent to anyone who needs it with forceSend).
-		if (hasNoNormalReceivers) return;
-
-		//MainRegistry.logger.info("UPDATE: Sent TE data in chunk ({}, {})", this.xCoord >> 4, this.zCoord >> 4);
-		sendToPlayers(packet, toSendTo);
-		hasDataChanged = false;
-	}
-
-	private Set<EntityPlayerMP> getPlayersToSendTo(int range) {
-		Set<EntityPlayerMP> toSendTo = new HashSet<>();
-		// Check if any players are actually within range.
-		// If no player is actually close enough to receive the data, why compile/send it?
-		// This also acts as a pre-calculation step for later where we need to send to all nearby players,
-		// hence why this uses a `SendTo` instead of an `AllAround`.
-		// I have no idea why NTM never did this.
-		for (Object obj : worldObj.playerEntities) {
-			EntityPlayerMP player = (EntityPlayerMP) obj;
-			if (player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) <= range * range)
-				toSendTo.add(player);
-		}
-		return toSendTo;
-	}
-
-	private static void sendToPlayers(IMessage message, Iterable<EntityPlayerMP> list) {
-		for(EntityPlayerMP player : list) {
-			PacketDispatcher.wrapper.sendTo(message, player);
-			//MainRegistry.logger.info("Sent TE data in chunk ({}, {}) to {}", this.xCoord >> 4, this.zCoord >> 4, player.getCommandSenderName());
-		}
-	}
-
-	@Override
-	public void playerNeedsData(EntityPlayerMP player) {
-		if (playersNeedingData == null)
-			playersNeedingData = new ArrayList<>();
-		playersNeedingData.add(player);
 	}
 }

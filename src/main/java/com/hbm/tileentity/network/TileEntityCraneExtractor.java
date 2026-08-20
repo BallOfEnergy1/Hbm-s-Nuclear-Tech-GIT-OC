@@ -165,7 +165,7 @@ public class TileEntityCraneExtractor extends TileEntityCraneBase implements IGU
 				}
 			}
 
-			this.networkPackNT(15);
+			this.networkPackMK2(15);
 		}
 	}
 
@@ -228,6 +228,7 @@ public class TileEntityCraneExtractor extends TileEntityCraneBase implements IGU
 	@Override
 	public void nextMode(int i) {
 		this.matcher.nextMode(worldObj, slots[i], i);
+		this.dataChanged();
 	}
 
 	@Override
@@ -291,6 +292,7 @@ public class TileEntityCraneExtractor extends TileEntityCraneBase implements IGU
 			setFilterContents(data);
 		}
 		this.markDirty();
+		this.dataChanged();
 	}
 
 	@Override

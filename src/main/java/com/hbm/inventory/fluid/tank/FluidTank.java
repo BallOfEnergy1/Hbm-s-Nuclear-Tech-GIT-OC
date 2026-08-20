@@ -45,6 +45,8 @@ public class FluidTank implements Cloneable {
 	protected int maxFluid;
 	protected int pressure = 0;
 	
+	public boolean hasDataChanged = true;
+	
 	public FluidTank(FluidType type, int maxFluid) {
 		this.type = type;
 		this.maxFluid = maxFluid;
@@ -53,10 +55,14 @@ public class FluidTank implements Cloneable {
 	public FluidTank withPressure(int pressure) {
 		if(this.pressure != pressure) this.setFill(0);
 		this.pressure = pressure;
+		hasDataChanged = true;
 		return this;
 	}
 	
-	public void setFill(int i) { fluid = i; }
+	public void setFill(int i) {
+		fluid = i;
+		hasDataChanged = true;
+	}
 	
 	public void setTankType(FluidType type) {
 		if(type == null) type = Fluids.NONE;
@@ -64,12 +70,14 @@ public class FluidTank implements Cloneable {
 		
 		this.type = type;
 		this.setFill(0);
+		hasDataChanged = true;
 	}
 	
 	public void resetTank() {
 		this.type = Fluids.NONE;
 		this.fluid = 0;
 		this.pressure = 0;
+		hasDataChanged = true;
 	}
 	
 	/** Changes type and pressure based on a fluid stack, useful for changing tank types based on recipes */
@@ -92,6 +100,7 @@ public class FluidTank implements Cloneable {
 			fluid = maxFluid;
 			return dif;
 		}
+		hasDataChanged = true;
 		return 0;
 	}
 	
@@ -110,7 +119,10 @@ public class FluidTank implements Cloneable {
 			}
 		}
 		
-		return this.getFill() > prev;
+		boolean filledAny = this.getFill() > prev;
+		if (filledAny)
+			hasDataChanged = true;
+		return filledAny;
 	}
 	
 	//Fills canisters from tank
@@ -124,8 +136,11 @@ public class FluidTank implements Cloneable {
 				break;
 			}
 		}
-		
-		return this.getFill() < prev;
+
+		boolean drainedAny = this.getFill() < prev;
+		if (drainedAny)
+			hasDataChanged = true;
+		return drainedAny;
 	}
 
 	public boolean setType(int in, ItemStack[] slots) {
@@ -150,6 +165,7 @@ public class FluidTank implements Cloneable {
 				if(type != newType) {
 					type = newType;
 					fluid = 0;
+					this.hasDataChanged = true;
 					return true;
 				}
 				
@@ -160,6 +176,7 @@ public class FluidTank implements Cloneable {
 					slots[out] = slots[in].copy();
 					slots[in] = null;
 					fluid = 0;
+					this.hasDataChanged = true;
 					return true;
 				}
 			}
@@ -274,6 +291,7 @@ public class FluidTank implements Cloneable {
 			type = Fluids.fromID(nbt.getInteger(s + "_type"));
 		
 		this.pressure = nbt.getShort(s + "_p");
+		this.hasDataChanged = true;
 	}
 	
 	public void serialize(ByteBuf buf) {

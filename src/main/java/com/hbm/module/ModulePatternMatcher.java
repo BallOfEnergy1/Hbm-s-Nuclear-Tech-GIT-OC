@@ -1,6 +1,5 @@
 package com.hbm.module;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.hbm.items.special.ItemBedrockOreNew;
@@ -8,7 +7,6 @@ import com.hbm.util.BufferUtil;
 import com.hbm.util.ItemStackUtil;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
@@ -20,9 +18,6 @@ public class ModulePatternMatcher {
 	public static final String MODE_WILDCARD = "wildcard";
 	public static final String MODE_BEDROCK = "bedrock";
 	public String[] modes;
-
-	private ByteBuf cache;
-	private int cacheHash;
 
 	public ModulePatternMatcher() {
 		this.modes = new String[1];
@@ -176,21 +171,11 @@ public class ModulePatternMatcher {
 		}
 	}
 
+	// Deoptimized due to new changes to network (net optimizations).
 	public void serialize(ByteBuf buf) {
-		int hash = Arrays.hashCode(modes);
-		if (cache != null) {
-			if (hash == cacheHash) {
-				buf.writeBytes(cache, 0, cache.writerIndex());
-				return;
-			}
-			cache.release();
-		}
-		cache = PooledByteBufAllocator.DEFAULT.heapBuffer();
 		for (String mode : modes) {
-			BufferUtil.writeString(cache, mode);
+			BufferUtil.writeString(buf, mode);
 		}
-		cacheHash = hash;
-		buf.writeBytes(cache, 0, cache.writerIndex());
 	}
 
 	public void deserialize(ByteBuf buf) {

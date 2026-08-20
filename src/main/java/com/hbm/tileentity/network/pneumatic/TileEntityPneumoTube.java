@@ -119,7 +119,6 @@ public class TileEntityPneumoTube extends TileEntityMachineBase implements IGUIP
 						if(net.send((IInventory) sendFrom, this, this.insertionDir.getOpposite(), sendOrder, receiveOrder, getRangeFromPressure(compair.getPressure()), sendCounter)) {
 							this.compair.setFill(this.compair.getFill() - 50);
 
-							this.dataChanged();
 							if(this.soundDelay <= 0 && !this.muffled) {
 								worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "hbm:weapon.reload.tubeFwoomp", 0.25F, 0.9F + worldObj.rand.nextFloat() * 0.2F);
 								this.soundDelay = 20;
@@ -203,10 +202,12 @@ public class TileEntityPneumoTube extends TileEntityMachineBase implements IGUIP
 	
 	public void nextMode(int index) {
 		this.pattern.nextMode(worldObj, slots[index], index);
+		this.dataChanged();
 	}
 
 	public void initPattern(ItemStack stack, int index) {
 		this.pattern.initPatternSmart(worldObj, stack, index);
+		this.dataChanged();
 	}
 
 	@Override
@@ -240,8 +241,6 @@ public class TileEntityPneumoTube extends TileEntityMachineBase implements IGUIP
 		this.whitelist = nbt.getBoolean("whitelist");
 		this.redstone = nbt.getBoolean("redstone");
 		this.isIndirectlyPowered = nbt.getBoolean("redstoneIndirectlyPowered");
-
-		this.dataChanged();
 	}
 
 	@Override

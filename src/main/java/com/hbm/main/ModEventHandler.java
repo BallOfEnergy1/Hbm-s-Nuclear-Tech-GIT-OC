@@ -24,7 +24,6 @@ import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.BobmazonOfferFactory;
 import com.hbm.handler.BossSpawnHandler;
 import com.hbm.handler.EntityEffectHandler;
-import com.hbm.handler.packet.PacketOptimizationHandler;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IBomb;
 import com.hbm.interfaces.Spaghetti;
@@ -1102,8 +1101,6 @@ public class ModEventHandler {
 		if(evt.entity instanceof EntityMissileCustom) {
 			((EntityMissileCustom) evt.entity).loadNeighboringChunks(evt.newChunkX, evt.newChunkZ);
 		}*/
-
-		PacketOptimizationHandler.onChunkEntered(evt);
 	}
 
 	@SubscribeEvent
